@@ -1,0 +1,34 @@
+﻿@model Inventory.ViewModels.Supplier.SupplierUpdateViewModel
+
+@{
+    Layout = "_Layout";
+}
+
+<div class="container" >
+    <form method="POST" asp-controller="Supplier" asp-action="Update">
+        <div class="form-group">
+            <input readonly asp-for="Id" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input class="form-control" asp-for="Name" />
+            <span class="alert-danger" asp-validation-for="Name"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Phone"></label>
+            <input class="form-control" asp-for="Phone" />
+            <span class="alert-danger" asp-validation-for="Phone"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input class="form-control" asp-for="Email" />
+            <span class="alert-danger" asp-validation-for="Email"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Address"></label>
+            <input class="form-control" asp-for="Address" />
+        </div>
+
+        <button class="btn btn-outline-info" type="submit" >Create</button>
+    </form>
+</div>

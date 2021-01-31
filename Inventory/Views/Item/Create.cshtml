@@ -1,0 +1,15 @@
+﻿@model Inventory.ViewModels.Item.ItemCreateIndexView
+@{
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <form method="post" asp-controller="Item" asp-action="Create">
+        <div class="form-group">
+            <label asp-for="ItemName"></label>
+            <input class="form-control" type="text" asp-for="ItemName" />
+            <span asp-validation-for="ItemName" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-info">Create Item</button>
+    </form>
+</div>

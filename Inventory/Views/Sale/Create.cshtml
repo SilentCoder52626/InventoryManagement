@@ -1,0 +1,207 @@
+﻿@model Inventory.ViewModels.Sale.SaleIndexViewModel
+
+@{
+    Layout = "_Layout";
+}
+
+<div class="container mt-2">
+    <div class="row">
+
+        <div class="col-6">
+            <form class="rounded border-success border-left  text-dark alert-info p-4" method="post" asp-controller="Sale" asp-action="Create">
+                <div class="form-group">
+                    <label asp-for="CusId"></label>
+                    @Html.DropDownListFor(a => a.CusId, new SelectList(Model.customers, "CusId", "FullName"), new { @class = "form-control", id = "cusName" })
+                    <span asp-validation-for="CusId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ItemId"></label>
+                    <select id="productDrop" class="form-control" asp-for="ItemId" asp-items="@Model.itemList"></select>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-form-label" >Price:-</label>
+                    <input id="price" readonly class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label class="col-form-label"> Quantity</label>
+                    <input id="qty" class="form-control" placeholder="Input quantity" />
+                </div>
+
+                <button id="btn" type="submit" class="btn btn-info">Add to List</button>
+            </form>
+        </div>
+
+        <div class="col-6">
+            <div class="table-responsive" style="max-height:300px; overflow-y:scroll;">
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Customer</th>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <form method="POST">
+                <ul class="list-group mt-3">
+
+                    <li class="list-group-item bg-info active">Sale Detail</li>
+                    
+                    <li class="list-group-item text-right ">V.A.T:- 
+                        <input id="vat" value="1000" readonly />
+                    </li>
+                    
+                    <li class="list-group-item text-right ">Total:- 
+                        <input id="totalAmt" readonly /> 
+                    </li>
+                    
+                    <li class="list-group-item text-right ">Discount:- 
+                        <input id="discount" value="500" readonly />
+                    </li>
+                    
+                    <li class="list-group-item text-right text-danger ">Net Total:- 
+                        <input id="net" readonly />
+                    </li>
+
+                    <button id="btnSave" type="submit" class="btn btn-block btn-success" >Save Sale</button>
+                </ul>
+            </form>
+            
+
+            
+             
+
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+
+            $('#productDrop').on('change', function (e) {
+                e.preventDefault();
+
+                var p_id = $('#productDrop').val();
+                
+
+                var url = `/Sale/GetPrice?id=${p_id}`;
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data, status) {
+                        $('#price').val(data.price);
+                    }
+                })   
+            });
+
+            $('#btn').click(function () {
+                event.preventDefault();
+                var item_id = $('#productDrop :selected ').text();
+                var cus_name = $('#cusName :selected ').text();
+                var price = $('#price').val();
+                var qty = $('#qty').val();
+                var total = price * qty;
+
+                $('table tbody').append(
+                    `<tr>
+                    <td id="customerName"> ${cus_name} </td > 
+                    <td id="itemName"> ${item_id} </td >
+                    <td id="qty"> ${qty}</td >
+                    <td id="price"> ${price} </td >
+                    <td id="total"> ${total} </td>
+                    <td> <button id="removeButton" class="btn btn-danger"> Remove </button> </td>
+                    </tr >`
+                );
+                calculateTotal();
+            })
+
+            $("#productDrop").trigger("change");
+
+            function calculateTotal() {
+                var total = 0;
+                $('table tr').each(function () {
+                    var value = parseInt($('td', this).eq(4).text());
+                    if (!isNaN(value)) {
+                        total += value;
+                    }
+                });
+                $("#totalAmt").val(total);
+
+                var vat = $("#vat").val();
+                var discount = $("#discount").val();
+                var net = (parseInt(total, 10) + parseInt(vat, 10)) - parseInt(discount,10);
+
+                $("#net").val(net);
+            }
+
+            $("body").delegate('#removeButton','click', function () {
+                console.log("remove button clicked");
+                event.preventDefault();
+
+                $(this).closest('tr').remove();
+                calculateTotal();
+            });
+
+            $("#btnSave").on('click', function (e) {
+                e.preventDefault();
+
+                var url = `/Sale/Create`;
+                var data = {
+                    CusId: $("#cusName").val(),
+                    ItemId: $("#productDrop").val(),
+                    total: $("#totalAmt").val(),     
+                    vat: $("#vat").val(),
+                    netTotal: $("#net").val(),
+                    discount: $("#discount").val(),
+                    SalesDetails: [],
+                }
+
+                $("table>tbody>tr").each(function () {
+
+                    console.log("triggered each func.");
+
+                    data.SalesDetails.push({
+
+                        ItemName: $(this).find("#itemName").text(),
+                        CustomerName: $(this).find("#customerName").text(),
+                        Qty: $(this).find("#qty").text(),
+                        Price: $(this).find("#price").text(),
+                        Total: $(this).find("#total").text(),
+
+                    })
+
+                });
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: data,
+                    success: function (data, status) {
+                        console.log(data.id);
+                        alert("Saved Successfully!!!");
+                        window.location.href =`/Sale/Index`;
+                    }
+                })
+
+            });
+
+
+        });
+     
+    </script>
+}

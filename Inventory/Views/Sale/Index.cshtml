@@ -1,0 +1,124 @@
+﻿@model IList<Inventory.ViewModels.Sale.SaleIndexViewModel>
+
+@{
+    Layout = "_Layout";
+}
+
+<div class="container-fluid mt-2">
+    <div class="row">
+        <div class="col-sm">
+            <a class="btn btn-info btn-block" asp-controller="Sale" asp-action="Create"> Create New Sale </a>
+
+            <div  class="table table-responsive mt-4">
+                <table id="mainTable"  class="table mt-3 ">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Customer</th>
+                            <th scope="col">Discount</th>
+                            <th scope="col">Net Total</th>
+                            <th scope="col">TaxAmount</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            foreach (var data in Model)
+                            {
+                                <tr>
+                                    <td scope="row" class="sale-id">@data.SaleId</td>
+                                    <td>@data.CustomerName</td>
+                                    <td>@data.discount</td>
+                                    <td>@data.netTotal</td>
+                                    <td>@data.vat</td>
+                                    <td>
+                                        <a class="btn btn-info btn-details text-white btn-sm" data-toggle="modal" data-target="#myModal"> Details </a>
+                                    </td>
+                                </tr>
+
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+       <div class="modal fade" id="myModal" role="dialog">
+           <div class="modal-dialog  bg-light ">
+               <div class="modal-header bg-danger">
+                   <button type="button" class="close" data-dismiss="modal">&times;</button>
+               </div>
+               <div class="modal-body bg-light">
+                   <table class="table modal-table">
+                       <thead class="thead-dark">
+                           <tr>
+                               <th> # </th>
+                               <th> Item Name </th>
+                               <th> Qty </th>
+                               <th> Price </th>
+                               <th> Total</th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                           <tr></tr>
+                       </tbody>
+                   </table>
+               </div>
+               <div class="modal-footer text-white-50 bg-dark">
+                   Its a footer.
+               </div>
+           </div>
+       </div>
+
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+            $("#mainTable").DataTable({
+                "pageLength": 5,
+            });
+
+            $('.btn-details').on('click', function () {
+
+                event.preventDefault();
+
+                var id = $(this).closest('tr').find('td').eq(0).text();
+                var url = `Sale/GetDetails?id=${id}`;
+
+                console.log(id);
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+
+                        console.log(data);
+                        $('display').css({ 'display': "block" });
+                        $('.modal-table tbody tr').remove();
+
+                        for (var i = 0; i < data.length; i++) {
+                            $('.modal-table tbody').append(
+                                `
+                                <tr>
+                                    <td>${data[i].saleDetailId}</td>
+                                    <td>${data[i].itemName}</td>
+                                    <td>${data[i].qty}</td>
+                                    <td>${data[i].price}</td>
+                                    <td>${data[i].total}</td>
+                                </tr>
+                                `
+                            )
+                        }
+                    }
+
+                });
+
+            });
+        });
+    </script>
+
+}        

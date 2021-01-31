@@ -1,0 +1,120 @@
+﻿@model IList<Inventory.ViewModels.Purchase.PurchaseIndexViewModel>
+
+@{
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <a class="btn btn-primary mb-2 mt-2" asp-controller="Purchase" asp-action="Create"> Create a Purchase.</a>
+
+    <div class="table bg-light">
+        <table class="table" id="mainTable">
+            <thead class="table-bordered table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Date/Time</th>
+                    <th>Supplier Name</th>
+                    <th>Grand Total</th>
+                    <th>Vat</th>
+                    <th>Discount</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody class="table-borderless">
+                @{
+                    foreach (var data in Model)
+                    {
+                        <tr>
+                            <td>@data.Id</td>
+                            <td>@data.PurchaseDateTime</td>
+                            <td>@data.SupplierName</td>
+                            <td>@data.GrandTotal</td>
+                            <td>@data.Vat</td>
+                            <td>@data.Discount</td>
+                            <td>
+                                <a class="btn btn-detail btn-link" data-toggle="modal" href="#" data-target="#myModal"><i class="fas text-success fa-2x fa-info-circle"></i></a>
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </table>
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog  bg-light ">
+                <div class="modal-header bg-warning">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body bg-light">
+                    <table class="table modal-table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th> # </th>
+                                <th> Item Name </th>
+                                <th> Qty </th>
+                                <th> Price </th>
+                                <th> Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr> </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="modal-footer text-white-50 bg-dark">
+                    &copy; Crystal Inventory
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+</div>
+
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+            $('#mainTable').DataTable();
+
+            $('.btn-detail').on('click', function (e) {
+                e.preventDefault();
+                var id = $(this).closest('tr').find('td').eq(0).text();
+                console.log(id);
+
+                var url = `/getdetails/${id}`;
+
+                $.ajax({
+                    url: url,
+                    dataType: 'json',
+                    type: 'GET',
+                    success: function (data) {
+                        console.log(data);
+                        $('display').css({ 'display': 'block' });
+                        $('.modal-table tbody tr').remove();
+
+                        for (var i = 0; i <= data.length; i++) {
+                            $('.modal-table tbody').append(
+                                `
+                                <tr>
+                                    <td>${data[i].id}</td>
+                                    <td>${data[i].name}</td>
+                                    <td>${data[i].qty}</td>
+                                    <td>${data[i].rate}</td>
+                                    <td>${data[i].amount}</td>
+                                </tr>
+                               `
+                            )
+                        }
+                     }
+                });
+            })
+        });
+
+    </script>
+   
+}

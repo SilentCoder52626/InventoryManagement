@@ -1,0 +1,37 @@
+﻿@model Inventory.ViewModels.CustomerCreateViewModel
+@{
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <form method="post" asp-controller="Customer" asp-action="Create">
+        <div class="form-group">
+            <label asp-for="FullName"></label>
+            <input class="form-control" type="text" asp-for="FullName" />
+            <span asp-validation-for="FullName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Address"></label>
+            <input class="form-control" type="text" asp-for="Address" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input class="form-control" type="text" asp-for="Email" />
+            <span asp-validation-for="Email" class="text-info"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="PhoneNumber"></label>
+            <input class="form-control" type="text" asp-for="PhoneNumber" />
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Gender"></label>
+            <input class="form-control" type="text" asp-for="Gender" />
+        </div>
+        <button type="submit" class="btn btn-info">Create Customer</button>
+    </form>
+</div>

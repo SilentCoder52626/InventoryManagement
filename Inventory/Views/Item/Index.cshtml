@@ -1,0 +1,52 @@
+﻿@model IList<Inventory.ViewModels.Item.ItemIndexViewModel>
+@using InventoryLibrary.Entity
+
+@{
+    Layout = "_Layout";
+}
+
+<div class=" container mt-2">
+    <div class="row">
+        <a class="btn btn-primary" asp-controller="Item" asp-action="Create"><i class="fas fa-plus-square"></i></a>
+        <div class="table">
+            <table class="table mt-3">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Item Name</th>
+                        <th scope="col">Action</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        foreach (var data in Model)
+                        {
+                        <tr>
+                            <th>@data.ItemId</th>
+                            <td>@data.Name</td>
+                            <td>
+                                <a class="btn btn-info" asp-controller="Item" asp-action="Update" asp-route-id="@data.ItemId"><i class="fas fa-edit"></i></a>
+                            </td>
+                            <td>
+                                @{
+                                    if (data.Status == "Active")
+                                    {
+                                        <a class="btn " asp-controller="Item" asp-action="Deactivate" asp-route-id="@data.ItemId"><i class="fas text-success fa-2x fa-toggle-on"></i></a>
+                                    }
+                                    else
+                                    {
+                                        <a class="btn " asp-controller="Item" asp-action="Activate" asp-route-id="@data.ItemId"><i class="fas text-danger fa-2x fa-toggle-off"></i></a>
+
+                                    }
+                                }
+
+                            </td>
+                        </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

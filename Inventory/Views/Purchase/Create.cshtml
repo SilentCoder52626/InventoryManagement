@@ -1,0 +1,110 @@
+﻿@model Inventory.ViewModels.Purchase.PurchaseIndexViewModel
+
+@{
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="row">
+
+        <div class="col-6">
+            
+            <div class="form-group shadow p-3 ">
+                <label class="font-weight-bold" asp-for="SupplierId"></label>
+                @Html.DropDownListFor(a => a.SupplierId, new SelectList(Model.Suppliers, "Id", "Name"), new { @class = "form-control", id = "SupplierId" })
+                <span asp-validation-for="SupplierId" class="text-danger"></span>
+                <a class="btn mt-2 btn-info text-white btn-sm small" id="change" hidden> change </a>
+            </div>
+
+            <form class="shadow rounded border-primary border-left  text-dark  p-4" method="post" asp-controller="Purchase" asp-action="Create">
+                <div class="form-group">
+                    <label class="font-weight-bold" asp-for="ItemId"></label>
+                    @Html.DropDownListFor(a => a.ItemId, new SelectList(Model.Items, "Id", "Name"), new { @class = "form-control", id = "item_id" })
+                </div>
+
+                <div class="form-group">
+                    <label class="font-weight-bold col-form-label"> Rate: </label>
+                    <input id="rate" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label class="font-weight-bold col-form-label"> Quantity: </label>
+                    <input id="qty" value="1" class="form-control" placeholder="Input quantity" />
+                </div>
+
+
+                <button id="button" type="submit" class="btn btn-primary"><i class="fas fa-plus"></i></button>
+            </form>
+        </div>
+
+        <div class="col-6">
+            <div class="table-responsive" style="max-height:300px; overflow-y:scroll;">
+                <table class="table detail-table">
+                    <thead class="shadow ">
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Rate</th>
+                            <th>Amount</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    </tbody>
+
+                </table>
+            </div>
+
+            <form method="POST">
+                <ul class="list-group mt-3">
+
+                    <li class="list-group-item bg active">Sale Detail</li>
+
+                    <li class="list-group-item text-right ">
+                        Total:-
+                        <input id="totalAmt" readonly />
+                    </li>
+
+                    <li class="list-group-item text-right ">
+                        V.A.T:-
+                        <input id="vat" readonly />
+                    </li>
+
+                    <li class="list-group-item text-right ">
+
+                        Discount:-
+                        <input  id="discount" value="20" />
+                        </li>
+
+
+                    <li class="list-group-item text-right text-danger ">
+                        Grand Total: -
+                        <input id="grand" readonly />
+                    </li>
+
+                </ul>
+
+
+
+                <button id="btnSave" type="submit" class="btn btn-block btn-success"><i class="fas fa-save"></i></button>
+            </form>
+            <li class="list-group-item text-right text-info ">
+                Remarks
+                <textarea class="form-control" id="remarks" ></textarea>
+                <button class="btn mt-2 btn-outline-info btn-sm" id="btnRemark"> Auto Add Remarks </button>
+            </li>
+        </div>
+    </div>
+
+
+
+</div>
+
+@section scripts{ 
+
+<script>
+   
+</script>
+
+}

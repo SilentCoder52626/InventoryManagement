@@ -1,0 +1,45 @@
+﻿@model IList<Inventory.ViewModels.CustomerIndexViewModel>
+
+@{
+    Layout = "_Layout";
+}
+
+<div class=" container mt-2">
+    <div class="row">
+        <a class="btn btn-primary" asp-controller="Customer" asp-action="Create">Add a Customer</a>
+        <div class="table">
+            <table class="table mt-3">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Full Name</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone Number</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        foreach (var data in Model)
+                        {
+                            <tr>
+                                <th scope="row">@data.CusId</th>
+                                <td>@data.FullName</td>
+                                <td>@data.Address</td>
+                                <td>@data.Email</td>
+                                <td>@data.PhoneNumber</td>
+                                <td>@data.Gender</td>
+                                <td>
+                                    <a class="btn btn-info" asp-controller="Customer" asp-action="Update" asp-route-id="@data.CusId">Edit</a>
+                                    <a class="btn btn-danger" asp-controller="Customer" asp-action="Remove" asp-route-id="@data.CusId">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

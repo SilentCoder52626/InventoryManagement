@@ -1,0 +1,13 @@
+{
+  "ConnectionStrings": {
+    "TestConnection": "Server=127.0.0.1;Database=;Uid=;Pwd=;Convert Zero Datetime=True"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*"
+}
