@@ -59,19 +59,19 @@
                     <li class="list-group-item bg-info active">Sale Detail</li>
                     
                     <li class="list-group-item text-right ">V.A.T:- 
-                        <input id="vat" value="1000" readonly />
+                        <input id="vat" value="0" readonly="readonly" />
                     </li>
                     
                     <li class="list-group-item text-right ">Total:- 
-                        <input id="totalAmt" readonly /> 
+                        <input id="totalAmt" readonly="readonly" /> 
                     </li>
                     
                     <li class="list-group-item text-right ">Discount:- 
-                        <input id="discount" value="500" readonly />
+                        <input id="discount" value="0" type="number" />
                     </li>
                     
                     <li class="list-group-item text-right text-danger ">Net Total:- 
-                        <input id="net" readonly />
+                        <input id="net" readonly="readonly" />
                     </li>
 
                     <button id="btnSave" type="submit" class="btn btn-block btn-success" >Save Sale</button>
@@ -102,13 +102,13 @@
                     url: url,
                     type: 'GET',
                     dataType: 'json',
-                    success: function (data, status) {
-                        $('#price').val(data.price);
+                    success: function(data) {
+                        $('#price').val(data);
                     }
-                })   
+                });
             });
 
-            $('#btn').click(function () {
+            $('#btn').click(function() {
                 event.preventDefault();
                 var item_id = $('#productDrop :selected ').text();
                 var cus_name = $('#cusName :selected ').text();
@@ -127,7 +127,7 @@
                     </tr >`
                 );
                 calculateTotal();
-            })
+            });
 
             $("#productDrop").trigger("change");
 

@@ -71,10 +71,14 @@ namespace Inventory.Controllers
 
             return View();
         }
-
+        [HttpGet]
         public async Task<IActionResult> GetPrice(int id)
         {
-            var price = await _itemRepo.GetById(id).ConfigureAwait(true);
+            var Item = (await _itemRepo.GetById(id).ConfigureAwait(true));
+
+            decimal price = 0;
+            if (Item != null)
+                price = Item.Rate;
 
             return Json(price);
         }

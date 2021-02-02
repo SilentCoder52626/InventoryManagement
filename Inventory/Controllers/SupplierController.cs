@@ -32,15 +32,14 @@ namespace Inventory.Controllers
             try
             {
                 await _supplierService.Activate(id);
-                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
 
                 _toastNotification.AddErrorToastMessage(ex.Message);
             }
+            return RedirectToAction("Index");
 
-            return View();
         }
 
         public IActionResult Create()
@@ -84,15 +83,15 @@ namespace Inventory.Controllers
             try
             {
                 await _supplierService.Deactivate(id);
-                _toastNotification.AddSuccessToastMessage("Succesfully Deactivated!");
-                return RedirectToAction("Index");
+                _toastNotification.AddSuccessToastMessage("Successfully Deactivated!");
             }
             catch (Exception ex)
             {
 
                 _toastNotification.AddErrorToastMessage(ex.Message);
             }
-            return View();
+            return RedirectToAction("Index");
+
         }
 
 
@@ -187,22 +186,6 @@ namespace Inventory.Controllers
             }
             return View();
         }
-
-        public async Task<IActionResult> Delete(long id)
-        {
-            try
-            {
-                await _supplierService.Delete(id).ConfigureAwait(true);
-
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-
-                _toastNotification.AddErrorToastMessage(ex.Message);
-            }
-            return View();
-        }
-
+        
     }
 }

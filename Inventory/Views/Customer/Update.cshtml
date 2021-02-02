@@ -4,38 +4,56 @@
     Layout = "_Layout";
 }
 
-<div class="container">
-    <form method="post" asp-controller="Customer" asp-action="Update">
-        <div class="form-group">
-            <label asp-for="CusId"></label>
-            <input class="form-control" type="text" readonly asp-for="CusId" />
-        </div>
-        <div class="form-group">
-            <label asp-for="FullName"></label>
-            <input class="form-control" type="text" asp-for="FullName" />
-            <span asp-validation-for="FullName" class="text-danger"></span>
-        </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <b>Update Item</b>
+                </div>
+                <div class="card-body">
+                    <form method="post" asp-controller="Customer" asp-action="Update">
+                        <div class="form-group">
+                            <label asp-for="CusId"></label>
+                            <input class="form-control" type="text" readonly asp-for="CusId" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="FullName"></label>
+                            <input class="form-control" type="text" asp-for="FullName" />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
 
-        <div class="form-group">
-            <label asp-for="Address"></label>
-            <input class="form-control" type="text" asp-for="Address" />
-        </div>
+                        <div class="form-group">
+                            <label asp-for="Address"></label>
+                            <input class="form-control" type="text" asp-for="Address" />
+                        </div>
 
-        <div class="form-group">
-            <label asp-for="Email"></label>
-            <input class="form-control" type="text" asp-for="Email" />
-            <span asp-validation-for="Email" class="text-info"></span>
-        </div>
+                        <div class="form-group">
+                            <label asp-for="Email"></label>
+                            <input class="form-control" type="text" asp-for="Email" />
+                            <span asp-validation-for="Email" class="text-info"></span>
+                        </div>
 
-        <div class="form-group">
-            <label asp-for="PhoneNumber"></label>
-            <input class="form-control" type="text" asp-for="PhoneNumber" />
-        </div>
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber"></label>
+                            <input class="form-control" type="text" asp-for="PhoneNumber" />
+                        </div>
 
-        <div class="form-group">
-            <label asp-for="Gender"></label>
-            <input class="form-control" type="text" asp-for="Gender" />
+                        <div class="form-group">
+                            <label asp-for="Gender"></label>
+                            <select class="form-control" asp-for="Gender">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-info">Update Customer</button>
+                    </form>
+
+
+                </div>
+            </div>
         </div>
-        <button type="submit" class="btn btn-info">Update Customer</button>
-    </form>
+    </div>
+
 </div>

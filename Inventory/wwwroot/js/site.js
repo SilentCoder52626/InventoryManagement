@@ -25,7 +25,12 @@
         $("body").toggleClass("sb-sidenav-toggled");
     });
 })(jQuery);
+// Data Table
 
+window.addEventListener('load',
+    () => {
+        $('[id$=datatable]').DataTable();
+    });
 // Select2 Sorter
 
 function shouldNotBeSorted(option) {

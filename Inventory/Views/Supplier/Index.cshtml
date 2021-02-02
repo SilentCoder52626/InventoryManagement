@@ -5,51 +5,58 @@
 }
 
 <div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <a class="btn btn-primary mb-2 mt-2" asp-controller="Supplier" asp-action="Create"><i class="fa fa-plus-square"></i> &nbsp; Add </a>
 
-    <a class="btn btn-primary mb-2 mt-2" asp-controller="Supplier" asp-action="Create"><i class="fas fa-plus-square"></i> &nbsp; Add </a>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-12 bg-light">
+            <table class="table" id="datatable">
+                <thead class="table-bordered table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Full Name</th>
+                        <th>Address</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody class="table-borderless">
+                    @{
+                        foreach (var data in Model)
+                        {
+                            <tr>
+                                <td>@data.Id</td>
+                                <td>@data.Name</td>
+                                <td>@data.Address</td>
+                                <td>@data.Email</td>
+                                <td>@data.Phone</td>
+                                <td>
+                                    @if (data.Status == InventoryLibrary.Entity.Item.StatusActive)
+                                    {
+                                        <a class="btn" asp-controller="Supplier" asp-action="Deactivate" asp-route-id="@data.Id"><i class="fa text-success fa-2x fa-toggle-on"></i></a>
+                                    }
+                                    else
+                                    {
+                                        <a class="btn " asp-controller="Supplier" asp-action="Activate" asp-route-id="@data.Id"><i class="fa text-danger fa-2x fa-toggle-off"></i></a>
+                                    }
+                                </td>
+                                <td>
+                                    <a class="btn btn-info" asp-controller="Supplier" asp-action="Update" asp-route-id="@data.Id"><i class="fa fa-edit"></i></a>
+                                </td>
 
-    <div class="table bg-light">
-        <table class="table">
-            <thead class="table-bordered table-dark">
-                <tr>
-                    <th>#</th>
-                    <th>Full Name</th>
-                    <th>Address</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Action</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody class="table-borderless">
-                @{
-                    foreach (var data in Model)
-                    {
-                        <tr>
-                            <td>@data.Id</td>
-                            <td>@data.Name</td>
-                            <td>@data.Address</td>
-                            <td>@data.Email</td>
-                            <td>@data.Phone</td>
-                            <td>
-                                <a class="btn btn-info" asp-controller="Supplier" asp-action="Update" asp-route-id="@data.Id"><i class="fas fa-edit"></i></a>
-                            </td>
-                            <td>
-                                @if (data.Status == InventoryLibrary.Entity.Item.StatusActive)
-                                {
-                                    <a class="btn" asp-controller="Supplier" asp-action="Deactivate" asp-route-id="@data.Id"><i class="fas text-success fa-2x fa-toggle-on"></i></a>
-                                }
-                                else
-                                {
-                                    <a class="btn " asp-controller="Supplier" asp-action="Activate" asp-route-id="@data.Id"><i class="fas text-danger fa-2x fa-toggle-off"></i></a>
-                                }
-                            </td>
 
-                        </tr>
+                            </tr>
+                        }
                     }
-                }
 
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
