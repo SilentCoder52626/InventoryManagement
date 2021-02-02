@@ -1,0 +1,42 @@
+﻿@model Inventory.ViewModels.Unit.UnitUpdateViewModel 
+
+@{
+    ViewData["Title"] = "Update Unit";
+
+    Layout = "_Layout";
+}
+
+<div class="container">
+    
+</div>
+<section class="container-fluid">
+   
+    <div class="row">
+        <div class="col-md-6">
+
+    <div class="card">
+        <div class="card-header">
+            <b>@ViewData["Title"]</b>
+        </div>
+        <div class="card-body">
+            <form method="post" asp-controller="Unit" asp-action="Update">
+                <div class="form-group">
+                    <label asp-for="UnitId"></label>
+                    <input class="form-control" readonly type="text" asp-for="UnitId" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Name"></label>
+                    <input class="form-control" type="text" asp-for="Name" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-info">Update Unit</button>
+            </form>
+        </div>
+    </div>
+    
+        </div>
+    </div>
+
+</section>

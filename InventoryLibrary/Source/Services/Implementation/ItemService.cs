@@ -33,11 +33,11 @@ namespace InventoryLibrary.Source.Services
 
         }
 
-        public async Task Create(ItemCreateDTO dto)
+        public async Task Create(UnitCreateDTO dto)
         {
             using var tx = TransactionScopeHelper.GetInstance();
             
-            var item = new Item(dto.ItemName);
+            var item = new Item(dto.Unit ,dto.ItemName,dto.Price);
             await _itemRepo.InsertAsync(item);
             
             tx.Complete();
@@ -74,7 +74,7 @@ namespace InventoryLibrary.Source.Services
             using var tx = TransactionScopeHelper.GetInstance();
 
             var item = await _itemRepo.GetById(dto.ItemId).ConfigureAwait(false) ?? throw new ItemNotFoundException();
-            item.Update(dto.Name);
+            item.Update(dto.Unit, dto.Name, dto.Price);
             await _itemRepo.UpdateAsync(item);
             tx.Complete();
         }

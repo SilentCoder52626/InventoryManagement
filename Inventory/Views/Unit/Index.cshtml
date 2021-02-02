@@ -1,0 +1,67 @@
+﻿@model IList<Inventory.ViewModels.Unit.UnitIndexViewModel>
+@using InventoryLibrary.Entity
+
+@{
+    Layout = "_Layout";
+}
+
+<div class="container">
+    <div class="box-shadow">
+        <div class="row">
+            <div class="col-md-2 mt-2">
+                <a class="btn btn-primary" asp-controller="Unit" asp-action="Create"><i class="fa fa-plus-square"></i>&nbsp; Add</a>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="table">
+                <table class="table mt-3" id="datatable">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Unit Name</th>
+                            <th scope="col">Is Active</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            foreach (var data in Model)
+                            {
+                                <tr>
+                                    <th>@data.UnitId</th>
+                                    <td>@data.Name</td>
+                                    <td>
+                                        @{
+                                            if (data.Status == "Active")
+                                            {
+                                                <a class="btn " asp-controller="Unit" asp-action="Deactivate" asp-route-id="@data.UnitId"><i class="fa text-success fa-2x fa-toggle-on"></i></a>
+                                            }
+                                            else
+                                            {
+                                                <a class="btn " asp-controller="Unit" asp-action="Activate" asp-route-id="@data.UnitId"><i class="fa text-danger fa-2x fa-toggle-off"></i></a>
+
+                                            }
+                                        }
+
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-info" asp-controller="Unit" asp-action="Update" asp-route-id="@data.UnitId"><i class="fa fa-edit"></i></a>
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+@section Scripts{
+    <script>
+        $('#datatable').DataTable();
+    </script>
+}

@@ -9,21 +9,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using InventoryLibrary.Repository.Interface;
+using InventoryLibrary.Source.Repository.Interface;
 
 namespace Inventory.Controllers
 {
     public class ItemController : Controller
     {
-        private readonly Testdbcontext _context;
         private readonly IToastNotification _toastNotification;
         private readonly ItemServiceInterface _itemService;
+        private readonly ItemRepositoryInterface _itemRepo;
+        private readonly UnitRepositoryInterface _unitRepo;
 
-        public ItemController(Testdbcontext context, IToastNotification toastNotification, ItemServiceInterface _itemService)
+        public ItemController(IToastNotification toastNotification, ItemServiceInterface _itemService,
+            ItemRepositoryInterface itemRepo, UnitRepositoryInterface unitRepo)
         {
-            _context = context;
             _toastNotification = toastNotification;
             this._itemService = _itemService;
-
+            _itemRepo = itemRepo;
+            _unitRepo = unitRepo;
         }
 
 
@@ -32,13 +36,18 @@ namespace Inventory.Controllers
         public async Task<IActionResult> Activate(long id)
         {
             await _itemService.Activate(id);
-            _toastNotification.AddSuccessToastMessage("Activated Succesfully!s");
+            _toastNotification.AddSuccessToastMessage("Activated Successfully!");
             return RedirectToAction("Index");
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            ItemCreateIndexView model = new ItemCreateIndexView
+            {
+                Units = (await _unitRepo.GetAllAsync().ConfigureAwait(true)).Where(a => a.IsActive()).ToList()
+            };
+
+            return View(model);
         }
 
         [HttpPost]
@@ -48,11 +57,9 @@ namespace Inventory.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    var Unit = await _unitRepo.GetById(model.UnitId).ConfigureAwait(true);
+                    var item = new UnitCreateDTO { ItemName = model.ItemName, Price = model.Price, Unit = Unit};
 
-                    var item = new ItemCreateDTO();
-
-                    item.ItemName = model.ItemName;
-                    item.Price = model.Price;
 
                     await _itemService.Create(item).ConfigureAwait(true);
                     _toastNotification.AddSuccessToastMessage("Sucessfully Created Item :- " + item.ItemName);
@@ -62,7 +69,7 @@ namespace Inventory.Controllers
             }
             catch (Exception ex)
             {
-
+                model.Units = (await _unitRepo.GetAllAsync().ConfigureAwait(true)).Where(a => a.IsActive()).ToList();
                 _toastNotification.AddErrorToastMessage(ex.Message);
             }
             return View(model);
@@ -75,18 +82,15 @@ namespace Inventory.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
 
-            var Item = _context.Items.ToList();
+            var Item = await _itemRepo.GetAllAsync().ConfigureAwait(true);
             var indexViewModel = new List<ItemIndexViewModel>();
 
             foreach (var data in Item)
             {
-                var model = new ItemIndexViewModel();
-                model.ItemId = data.Id;
-                model.Status = data.Status;
-                model.Name = data.Name;
+                var model = new ItemIndexViewModel { ItemId = data.Id, Status = data.Status, Name = data.Name, UnitName = data.Unit.Name, Rate = data.Rate};
                 indexViewModel.Add(model);
             }
 
@@ -95,14 +99,18 @@ namespace Inventory.Controllers
 
 
 
-        public IActionResult Update(long id)
+        public async Task<IActionResult> Update(long id)
         {
-            var Item = _context.Items.Where(a => a.Id == id).SingleOrDefault();
+            var Item = (await _itemRepo.GetById(id).ConfigureAwait(true));
 
-            var model = new ItemUpdateViewModel();
-
-            model.ItemId = Item.Id;
-            model.Name = Item.Name;
+            var model = new ItemUpdateViewModel
+            {
+                ItemId = Item.Id,
+                Name = Item.Name,
+                UnitId = Item.UnitId,
+                Rate = Item.Rate,
+                Units = (await _unitRepo.GetAllAsync().ConfigureAwait(true)).Where(a => a.IsActive()).ToList()
+            };
 
             return View(model);
         }
@@ -112,33 +120,24 @@ namespace Inventory.Controllers
         {
             try
             {
-                // var item = _context.Items.Find(model.ItemId);
+                var Unit = await _unitRepo.GetById(model.UnitId).ConfigureAwait(true);
+                var item = new ItemUpdateDTO { ItemId = model.ItemId, Name = model.Name, Price = model.Rate, Unit = Unit};
 
-                var item = new ItemUpdateDTO();
-
-                item.ItemId = model.ItemId;
-                item.Name = model.Name;
 
                 await _itemService.Update(item).ConfigureAwait(true);
 
-                _toastNotification.AddInfoToastMessage("Updated to :- " + item.Name);
+                _toastNotification.AddInfoToastMessage("Successfully Updated to :- " + item.Name);
 
             }
             catch (Exception ex)
             {
+                model.Units = (await _unitRepo.GetAllAsync().ConfigureAwait(true)).Where(a => a.IsActive()).ToList();
+
                 _toastNotification.AddErrorToastMessage("Error while in execution of update statement!");
             }
 
             return RedirectToAction("Index");
 
-        }
-        public async Task<IActionResult> Remove(long id)
-        {
-            // var _item = _context.Items.Find(id);
-
-            await _itemService.Delete(id).ConfigureAwait(true);
-
-            return RedirectToAction("Index");
         }
     }
 }

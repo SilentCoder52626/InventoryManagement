@@ -40,7 +40,7 @@ namespace Inventory.Controllers
         {
             try
             {
-                var sales = (await _saleRepo.GetQuerable().ConfigureAwait(true)).ToList();
+                var sales = (await _saleRepo.GetQueryable().ConfigureAwait(true)).ToList();
                 var indexViewModel = new List<SaleIndexViewModel>();
 
                 foreach (var data in sales)
@@ -81,7 +81,7 @@ namespace Inventory.Controllers
 
         public async Task<IActionResult> GetDetails(int id)
         {
-            var sale = (await _saleDetailRepo.GetQuerable()).Where(a => a.SaleId == id).ToList();
+            var sale = (await _saleDetailRepo.GetQueryable()).Where(a => a.SaleId == id).ToList();
             var data = sale.Select(a => new
             {
                 a.SaleDetailId,

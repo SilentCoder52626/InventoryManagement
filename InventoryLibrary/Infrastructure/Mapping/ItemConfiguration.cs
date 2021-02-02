@@ -7,7 +7,7 @@ using System.Text;
 
 namespace InventoryLibrary.Infrastructure.Mapping
 {
-    public class ItemConfiguration: IEntityTypeConfiguration<Item>
+    public class ItemConfiguration : IEntityTypeConfiguration<Item>
     {
         public void Configure(EntityTypeBuilder<Item> modelBuilder)
         {
@@ -24,6 +24,18 @@ namespace InventoryLibrary.Infrastructure.Mapping
                 .ToTable("items")
                 .Property(c => c.Status)
                 .HasColumnName("status");
+            modelBuilder
+                .ToTable("items")
+                .Property(c => c.Rate)
+                .HasColumnName("rate");
+            modelBuilder
+                 .ToTable("items")
+                 .Property(c => c.UnitId)
+                 .HasColumnName("unit_id");
+            modelBuilder
+                .ToTable("items")
+                .HasOne(a => a.Unit)
+                .WithMany(b => b.Items);
         }
     }
 }

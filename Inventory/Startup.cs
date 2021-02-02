@@ -47,6 +47,9 @@ namespace Inventory
 
             services.AddScoped<ItemRepositoryInterface, ItemRepository>();
             services.AddScoped<ItemServiceInterface, ItemService>();
+            
+            services.AddScoped<UnitRepositoryInterface, UnitRepository>();
+            services.AddScoped<UnitServiceInterface, UnitService>();
 
             services.AddScoped<SaleRepositoryInterface, SaleRepository>();
             services.AddScoped<SaleServiceInterface, SaleService>();

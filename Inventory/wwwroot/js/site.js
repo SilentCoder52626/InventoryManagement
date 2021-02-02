@@ -26,6 +26,26 @@
     });
 })(jQuery);
 
+// Select2 Sorter
+
+function shouldNotBeSorted(option) {
+    if (!option.id) return true;
+    if (option.id === 0) return true;
+    else if (option.id === "ALL" || option.id === "NONE") return true;
+    return false;
+}
+function select2OptionSorter(data) {
+    return data.sort(function (a, b) {
+        if (shouldNotBeSorted(a) && shouldNotBeSorted(b)) return 0;
+        if (shouldNotBeSorted(a)) return -1;
+        if (shouldNotBeSorted(b)) return 1;
+        return a.text.toLowerCase() < b.text.toLowerCase() ? -1 : a.text.toLowerCase() > b.text.toLowerCase() ? 1 : 0;
+    });
+}
+
+$(() => {
+    $('.type-ahead').select2({ width: "100%", placeholder: "Select", sorter: select2OptionSorter });
+});
 
 //Create Purchase Jquery
 
@@ -77,7 +97,6 @@ $(document).ready(function () {
 
         itemId = $('#item_id').val();
         itemName = $("#item_id option:selected").text();
-        console.log(itemName);
         rate = $('#rate').val();
         qty = $('#qty').val();
         amt = rate * qty;
@@ -114,7 +133,6 @@ $(document).ready(function () {
         rate = row.find("td").eq(3).text();
         qty = parseInt(row.find("td").eq(2).text());
         qty--;
-        console.log(qty);
 
         if (qty >= 0) {
 

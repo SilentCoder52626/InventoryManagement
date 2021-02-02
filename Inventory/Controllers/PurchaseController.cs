@@ -38,7 +38,7 @@ namespace Inventory.Controllers
         public async Task<IActionResult> Index()
         {
 
-            var purchases = (await _purchaseRepo.GetQuerable().ConfigureAwait(true)).ToList();
+            var purchases = (await _purchaseRepo.GetQueryable().ConfigureAwait(true)).ToList();
 
             var indexViewModel = new List<PurchaseIndexViewModel>();
 
@@ -66,7 +66,7 @@ namespace Inventory.Controllers
         {
             try
             {
-                var purchaseDetail = (await _purchaseDetailRepo.GetQuerable().ConfigureAwait(true)).Where(a => a.PurchaseId == id).ToList();
+                var purchaseDetail = (await _purchaseDetailRepo.GetQueryable().ConfigureAwait(true)).Where(a => a.PurchaseId == id).ToList();
                 var data = purchaseDetail.Select(a => new
                 {
                     a.Id,

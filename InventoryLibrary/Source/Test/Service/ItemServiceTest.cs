@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using InventoryLibrary.Source.Entity;
 using Xunit;
 
 namespace InventoryLibrary.Source.Test.Service
@@ -18,17 +19,20 @@ namespace InventoryLibrary.Source.Test.Service
         private string item_name = "Choco Fun";
 
         private ItemService _itemService;
-        private ItemCreateDTO _createDto;
+        private UnitCreateDTO _createDto;
         private ItemUpdateDTO _updateDto;
         private Item _item;
-        
+        private readonly Unit unit;
+
 
         public ItemServiceTest()
         {
+            unit = new Unit("as");
+
             _itemService = new ItemService(_itemRepo.Object);
-            _createDto = new ItemCreateDTO();
+            _createDto = new UnitCreateDTO();
             _updateDto = new ItemUpdateDTO();
-            _item = new Item(item_name);
+            _item = new Item(unit ,item_name, 10);
             
         }
 

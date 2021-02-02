@@ -100,7 +100,7 @@ namespace Inventory.Controllers
         {
             try
             {
-                var Suppliers = (await _supplierRepo.GetQuerable().ConfigureAwait(true)).ToList();
+                var Suppliers = (await _supplierRepo.GetQueryable().ConfigureAwait(true)).ToList();
 
                 var indexViewModel = new List<SupplierIndexViewModel>();
 

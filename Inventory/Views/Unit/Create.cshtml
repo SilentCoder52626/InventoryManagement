@@ -1,0 +1,30 @@
+﻿@model Inventory.ViewModels.Unit.UnitCreateIndexView
+@{
+    ViewData["Title"] = "Create Unit";
+    Layout = "_Layout";
+}
+<section class="container-fluid">
+   
+    <div class="row">
+        <div class="col-md-6">
+
+    <div class="card">
+        <div class="card-header">
+            <b>@ViewData["Title"]</b>
+        </div>
+        <div class="card-body">
+            <form method="post" asp-controller="Unit" asp-action="Create">
+                <div class="form-group">
+                    <label asp-for="UnitName"></label>
+                    <input class="form-control" type="text" asp-for="UnitName"/>
+                    <span asp-validation-for="UnitName" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-info">Create Unit</button>
+            </form>
+        </div>
+    </div>
+    
+        </div>
+    </div>
+
+</section>

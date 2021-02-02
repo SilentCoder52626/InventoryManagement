@@ -25,6 +25,7 @@ namespace InventoryLibrary.Source.Test.Entity
         private const string phone   = "9818195512";
 
 
+        private readonly Unit unit;
         private readonly Item _item;
         private const string item_name = "Choco Fun";
 
@@ -33,7 +34,8 @@ namespace InventoryLibrary.Source.Test.Entity
 
         public PurchaseTest()
         {
-            _item     = new Item(item_name);
+            unit = new Unit("as");
+            _item     = new Item(unit,item_name,10);
             _supplier = new Supplier(name, address, email, phone);
             _purchase = new Purchase(_supplier ,total, grand_total, discount, vat);
 

@@ -5,44 +5,55 @@
     Layout = "_Layout";
 }
 
-<div class=" container mt-2">
+<div class="container mt-2">
     <div class="row">
-        <a class="btn btn-primary" asp-controller="Item" asp-action="Create"><i class="fas fa-plus-square"></i></a>
+        <div class="col-md-3 mt-2">
+            <a class="btn btn-primary" asp-controller="Item" asp-action="Create"><i class="fa fa-plus-square"></i>&nbsp; Add</a>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+
         <div class="table">
-            <table class="table mt-3">
+            <table class="table mt-3" id="datatable">
                 <thead class="thead-dark">
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Item Name</th>
-                        <th scope="col">Action</th>
+                        <th scope="col">Unit Name</th>
+                        <th scope="col">Price</th>
                         <th scope="col">Status</th>
+                        <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @{
                         foreach (var data in Model)
                         {
-                        <tr>
-                            <th>@data.ItemId</th>
-                            <td>@data.Name</td>
-                            <td>
-                                <a class="btn btn-info" asp-controller="Item" asp-action="Update" asp-route-id="@data.ItemId"><i class="fas fa-edit"></i></a>
-                            </td>
-                            <td>
-                                @{
-                                    if (data.Status == "Active")
-                                    {
-                                        <a class="btn " asp-controller="Item" asp-action="Deactivate" asp-route-id="@data.ItemId"><i class="fas text-success fa-2x fa-toggle-on"></i></a>
-                                    }
-                                    else
-                                    {
-                                        <a class="btn " asp-controller="Item" asp-action="Activate" asp-route-id="@data.ItemId"><i class="fas text-danger fa-2x fa-toggle-off"></i></a>
+                            <tr>
+                                <th>@data.ItemId</th>
+                                <td>@data.Name</td>
+                                <td>@data.UnitName</td>
+                                <td>@data.Rate</td>
 
-                                    }
-                                }
+                                <td>
+                                    @{
+                                        if (data.Status == "Active")
+                                        {
+                                            <a class="btn " asp-controller="Item" asp-action="Deactivate" asp-route-id="@data.ItemId"><i class="fa text-success fa-2x fa-toggle-on"></i></a>
+                                        }
+                                        else
+                                        {
+                                            <a class="btn " asp-controller="Item" asp-action="Activate" asp-route-id="@data.ItemId"><i class="fa text-danger fa-2x fa-toggle-off"></i></a>
 
-                            </td>
-                        </tr>
+                                        }
+                                    }
+
+                                </td>
+                                <td>
+                                    <a class="btn btn-info" asp-controller="Item" asp-action="Update" asp-route-id="@data.ItemId"><i class="fa fa-edit"></i></a>
+                                </td>
+                            </tr>
                         }
                     }
                 </tbody>
@@ -50,3 +61,9 @@
         </div>
     </div>
 </div>
+@section Scripts
+{
+    <script>
+        $('#datatable').DataTable();
+    </script>
+}

@@ -15,6 +15,7 @@ namespace InventoryLibrary.AppDbContext
         }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Item> Items { get; set; }
+        public DbSet<Unit> Unit { get; set; }
         public DbSet<Sale> Sales { get; set; }
         public DbSet<SaleDetails> sale_details { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }

@@ -37,7 +37,7 @@ namespace Inventory.Controllers
         {
             try
             {
-                var Customer = (await _customerRepo.GetQuerable().ConfigureAwait(true)).ToList();
+                var Customer = (await _customerRepo.GetQueryable().ConfigureAwait(true)).ToList();
                 var indexViewModel = new List<CustomerIndexViewModel>();
 
                 foreach (var data in Customer)

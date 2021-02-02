@@ -12,7 +12,13 @@ namespace Inventory.ViewModels.Item
         [Required(ErrorMessage = "Provide an Item Name")]
         [Display(Name = "Item Name")]
         public string Name { get; set; }
+        [Display(Name = "Unit Name")]
+        public string UnitName { get; set; }
+        [Required(ErrorMessage = "Provide an Item Rate")]
+        [Display(Name = "Item Rate")]
+        public decimal Rate { get; set; }
 
         public string Status { get; set; }
+
     }
 }

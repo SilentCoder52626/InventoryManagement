@@ -4,12 +4,34 @@
 }
 
 <div class="container">
-    <form method="post" asp-controller="Item" asp-action="Create">
-        <div class="form-group">
-            <label asp-for="ItemName"></label>
-            <input class="form-control" type="text" asp-for="ItemName" />
-            <span asp-validation-for="ItemName" class="text-danger"></span>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <b>Create Item</b>
+                </div>
+                <div class="card-body">
+                    <form method="post" asp-controller="Item" asp-action="Create">
+                        <div class="form-group">
+                            <label asp-for="ItemName"></label>
+                            <input class="form-control" type="text" asp-for="ItemName" />
+                            <span asp-validation-for="ItemName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UnitId"></label>
+                            <select asp-for="UnitId" asp-items="@Model.UnitSelectList" class="form-control"></select>
+                            <span asp-validation-for="UnitId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Price"></label>
+                            <input class="form-control" type="text" asp-for="Price" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-info">Create Item</button>
+                    </form>
+                </div>
+            </div>
         </div>
-        <button type="submit" class="btn btn-info">Create Item</button>
-    </form>
+    </div>
+
 </div>
