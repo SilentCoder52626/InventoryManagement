@@ -11,7 +11,9 @@
             <form class="rounded border-success border-left  text-dark alert-info p-4" method="post" asp-controller="Sale" asp-action="Create">
                 <div class="form-group">
                     <label asp-for="CusId"></label>
-                    @Html.DropDownListFor(a => a.CusId, new SelectList(Model.customers, "CusId", "FullName"), new { @class = "form-control", id = "cusName" })
+                    <select asp-for="CusId" asp-items="@Model.CustomerSelectList" class="form-control">
+                        <option value="0">-Select-</option>
+                    </select>
                     <span asp-validation-for="CusId" class="text-danger"></span>
                 </div>
 
@@ -21,7 +23,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-form-label" >Price:-</label>
+                    <label class="col-form-label">Price:-</label>
                     <input id="price" readonly class="form-control" />
                 </div>
 
@@ -39,7 +41,6 @@
                 <table class="table">
                     <thead class="thead-dark">
                         <tr>
-                            <th>Customer</th>
                             <th>Item</th>
                             <th>Quantity</th>
                             <th>Price</th>
@@ -48,7 +49,6 @@
                         </tr>
                     </thead>
                     <tbody>
-
                     </tbody>
                 </table>
             </div>
@@ -57,30 +57,29 @@
                 <ul class="list-group mt-3">
 
                     <li class="list-group-item bg-info active">Sale Detail</li>
-                    
-                    <li class="list-group-item text-right ">V.A.T:- 
-                        <input id="vat" value="0" readonly="readonly" />
+
+                    <li class="list-group-item text-right ">
+                        Total:-
+                        <input id="totalAmt" readonly="readonly" />
                     </li>
-                    
-                    <li class="list-group-item text-right ">Total:- 
-                        <input id="totalAmt" readonly="readonly" /> 
+
+                    <li class="list-group-item text-right ">
+                        Discount:-
+                        <input id="discount" min-value="0" value="0" type="number" />
                     </li>
-                    
-                    <li class="list-group-item text-right ">Discount:- 
-                        <input id="discount" value="0" type="number" />
-                    </li>
-                    
-                    <li class="list-group-item text-right text-danger ">Net Total:- 
+
+                    <li class="list-group-item text-right text-danger ">
+                        Net Total:-
                         <input id="net" readonly="readonly" />
                     </li>
 
-                    <button id="btnSave" type="submit" class="btn btn-block btn-success" >Save Sale</button>
+                    <button id="btnSave" type="submit" class="btn btn-block btn-success">Save Sale</button>
                 </ul>
             </form>
-            
 
-            
-             
+
+
+
 
         </div>
     </div>
@@ -90,45 +89,137 @@
     <script>
         $(document).ready(function () {
 
-            $('#productDrop').on('change', function (e) {
-                e.preventDefault();
+            $('#productDrop').on('change',
+                function (e) {
+                    e.preventDefault();
 
-                var p_id = $('#productDrop').val();
-                
+                    var p_id = $('#productDrop').val();
 
-                var url = `/Sale/GetPrice?id=${p_id}`;
 
-                $.ajax({
-                    url: url,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        $('#price').val(data);
-                    }
+                    var url = `/Sale/GetPrice?id=${p_id}`;
+
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+                            $('#price').val(data);
+                        }
+                    });
                 });
-            });
 
-            $('#btn').click(function() {
+            function checkDuplicate(itemId) {
                 event.preventDefault();
-                var item_id = $('#productDrop :selected ').text();
+                let result = true;
+                $('table tr').each(function () {
+
+                    row = $(this).closest('tr');
+                    find_id = parseInt(row.find('td').eq(0).text());
+                    console.log("find id :- " + find_id);
+                    console.log(itemId);
+
+                    if (itemId == find_id) {
+                        alert("You have entered the same Item!");
+                        result = false;
+                    }
+
+                });
+                return result;
+
+            }
+
+            $('#discount').on('keyup',
+                function (e) {
+                    e.preventDefault();
+                    var total = $("#totalAmt").val();
+                    var discount = $("#discount").val();
+                    if (parseFloat(discount) > parseFloat(total)) {
+                        $("#discount").val(total);
+                    }
+                    calculateTotal();
+                });
+
+            $('#btn').click(function () {
+                event.preventDefault();
+                var item_name = $('#productDrop :selected ').text();
+                var item_id = $('#productDrop :selected ').val();
                 var cus_name = $('#cusName :selected ').text();
                 var price = $('#price').val();
                 var qty = $('#qty').val();
                 var total = price * qty;
+                if (checkDuplicate(item_id)) {
+                    $('table tbody').append(
+                        `<tr>
+                            <td id="item-id" hidden> ${item_id} </td >
 
-                $('table tbody').append(
-                    `<tr>
-                    <td id="customerName"> ${cus_name} </td > 
-                    <td id="itemName"> ${item_id} </td >
-                    <td id="qty"> ${qty}</td >
-                    <td id="price"> ${price} </td >
-                    <td id="total"> ${total} </td>
-                    <td> <button id="removeButton" class="btn btn-danger"> Remove </button> </td>
-                    </tr >`
-                );
+                        <td id="itemName"> ${item_name} </td >
+                        <td id="qty-list">
+                                <i id="minus" class="fa fa-minus-circle mr-2"></i> <span id="q"> ${qty} </span> <i id="plus" class="fa ml-2 fa-plus-circle"></i>
+                            </td>
+                        <td id="price"> ${price} </td >
+                        <td id="total"> ${total} </td>
+                        <td> <button id="removeButton" class="btn btn-danger"> Remove </button> </td>
+                        </tr >`
+                    );
+                }
                 calculateTotal();
             });
+            $('body').delegate("#minus",
+                "click",
+                function(e) {
 
+                    e.preventDefault();
+
+                    row = $(this).closest("tr");
+                    rate = row.find("td").eq(3).text();
+                    qty = parseInt(row.find("td").eq(2).text());
+                    qty--;
+
+                    if (qty >= 0) {
+
+                        amt = rate * qty;
+
+
+                        parseInt(row.find("td").eq(4).text(amt));
+                        calculateTotal();
+
+
+                        var counter = parseInt(row.find("#qty-list").text());
+                        counter--;
+                        row.find("#q").text(counter);
+
+                    } else {
+
+                        row.find("#minus").attr("disabled", true);
+
+                    }
+
+
+                });
+
+
+            $('body').delegate("#plus",
+                "click",
+                function(e) {
+                    e.preventDefault();
+
+                    row = $(this).closest("tr");
+
+                    rate = row.find("td").eq(3).text();
+                    qty = row.find("td").eq(2).text();
+                    qty++;
+                    amt = rate * qty;
+
+
+                    parseInt(row.find("td").eq(4).text(amt));
+                    calculateTotal();
+
+
+                    var counter = parseInt(row.find("#qty-list").text());
+                    counter++;
+                    row.find("#q").text(counter);
+
+                });
             $("#productDrop").trigger("change");
 
             function calculateTotal() {
@@ -141,67 +232,67 @@
                 });
                 $("#totalAmt").val(total);
 
-                var vat = $("#vat").val();
                 var discount = $("#discount").val();
-                var net = (parseInt(total, 10) + parseInt(vat, 10)) - parseInt(discount,10);
+                var net = (parseFloat(total) - parseFloat(discount));
 
                 $("#net").val(net);
             }
 
-            $("body").delegate('#removeButton','click', function () {
-                console.log("remove button clicked");
-                event.preventDefault();
+            $("body").delegate('#removeButton',
+                'click',
+                function () {
+                    console.log("remove button clicked");
+                    event.preventDefault();
 
-                $(this).closest('tr').remove();
-                calculateTotal();
-            });
+                    $(this).closest('tr').remove();
+                    calculateTotal();
+                });
 
-            $("#btnSave").on('click', function (e) {
-                e.preventDefault();
+            $("#btnSave").on('click',
+                function (e) {
+                    e.preventDefault();
 
-                var url = `/Sale/Create`;
-                var data = {
-                    CusId: $("#cusName").val(),
-                    ItemId: $("#productDrop").val(),
-                    total: $("#totalAmt").val(),     
-                    vat: $("#vat").val(),
-                    netTotal: $("#net").val(),
-                    discount: $("#discount").val(),
-                    SalesDetails: [],
-                }
+                    var url = `/Sale/Create`;
+                    var data = {
+                        CusId: $("#cusName").val(),
+                        ItemId: $("#productDrop").val(),
+                        total: $("#totalAmt").val(),
+                        vat: $("#vat").val(),
+                        netTotal: $("#net").val(),
+                        discount: $("#discount").val(),
+                        SalesDetails: [],
+                    }
 
-                $("table>tbody>tr").each(function () {
+                    $("table>tbody>tr").each(function () {
 
-                    console.log("triggered each func.");
+                        console.log("triggered each func.");
 
-                    data.SalesDetails.push({
+                        data.SalesDetails.push({
+                            ItemName: $(this).find("#itemName").text(),
+                            CustomerName: $(this).find("#customerName").text(),
+                            Qty: $(this).find("#qty").text(),
+                            Price: $(this).find("#price").text(),
+                            Total: $(this).find("#total").text(),
 
-                        ItemName: $(this).find("#itemName").text(),
-                        CustomerName: $(this).find("#customerName").text(),
-                        Qty: $(this).find("#qty").text(),
-                        Price: $(this).find("#price").text(),
-                        Total: $(this).find("#total").text(),
+                        });
 
-                    })
+                    });
+
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        dataType: 'json',
+                        data: data,
+                        success: function (data, status) {
+                            alert("Saved Successfully!!!");
+                            window.location.href = `/Sale/Index`;
+                        }
+                    });
 
                 });
 
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    dataType: 'json',
-                    data: data,
-                    success: function (data, status) {
-                        console.log(data.id);
-                        alert("Saved Successfully!!!");
-                        window.location.href =`/Sale/Index`;
-                    }
-                })
-
-            });
-
 
         });
-     
+
     </script>
 }

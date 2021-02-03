@@ -34,6 +34,8 @@ namespace Inventory.ViewModels.Sale
         public List<SaleDetailIndexViewModel> SalesDetails { get; set; }
         public IList<Customer> customers { get; set; } = new List<Customer>();
 
+        public SelectList CustomerSelectList =>
+            new SelectList(customers, nameof(Customer.CusId), nameof(Customer.FullName));
         public InventoryLibrary.Entity.Item? item { get; set; }
         public SelectList itemList => new SelectList(items, nameof(item.Id), nameof(item.Name));
         public IList<InventoryLibrary.Entity.Item> items { get; set; } = new List<InventoryLibrary.Entity.Item>();
