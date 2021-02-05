@@ -17,6 +17,8 @@ namespace Inventory.ViewModels.Item
         [Required(ErrorMessage = "Provide an Item Rate")]
         [Display(Name = "Item Rate")]
         public decimal Rate { get; set; }
+        [Display(Name= "Available Qty")]
+        public long AvailableQty { get; set; }
 
         public string Status { get; set; }
 

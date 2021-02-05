@@ -29,6 +29,10 @@ namespace InventoryLibrary.Infrastructure.Mapping
                 .Property(c => c.Rate)
                 .HasColumnName("rate");
             modelBuilder
+                .ToTable("items")
+                .Property(c => c.AvailableQty)
+                .HasColumnName("available_qty");
+            modelBuilder
                  .ToTable("items")
                  .Property(c => c.UnitId)
                  .HasColumnName("unit_id");

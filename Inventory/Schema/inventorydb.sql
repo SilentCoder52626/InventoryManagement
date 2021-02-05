@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 03, 2021 at 02:07 AM
+-- Generation Time: Feb 05, 2021 at 07:32 PM
 -- Server version: 10.4.8-MariaDB
 -- PHP Version: 7.3.11
 
@@ -37,13 +37,6 @@ CREATE TABLE `customers` (
   `Gender` varchar(7) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `customers`
---
-
-INSERT INTO `customers` (`CusId`, `FullName`, `Address`, `Email`, `PhoneNumber`, `Gender`) VALUES
-(2, 'Kaman', 'btm', 'cc@gmail.com', '1231412311', 'Male');
-
 -- --------------------------------------------------------
 
 --
@@ -55,16 +48,9 @@ CREATE TABLE `items` (
   `name` varchar(50) NOT NULL,
   `status` varchar(10) NOT NULL,
   `rate` decimal(18,2) NOT NULL,
-  `unit_id` bigint(20) NOT NULL
+  `unit_id` bigint(20) NOT NULL,
+  `available_qty` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `items`
---
-
-INSERT INTO `items` (`id`, `name`, `status`, `rate`, `unit_id`) VALUES
-(1, 'Apple', 'Active', '50.00', 1),
-(2, 'Rice', 'Active', '20.00', 2);
 
 -- --------------------------------------------------------
 
@@ -75,20 +61,13 @@ INSERT INTO `items` (`id`, `name`, `status`, `rate`, `unit_id`) VALUES
 CREATE TABLE `purchases` (
   `id` bigint(20) NOT NULL,
   `supplier_id` bigint(20) NOT NULL,
-  `total` decimal(20,0) NOT NULL,
-  `discount` decimal(20,0) NOT NULL,
-  `vat` decimal(20,0) NOT NULL,
+  `total` decimal(20,2) NOT NULL,
+  `discount` decimal(20,2) NOT NULL,
+  `vat` decimal(20,2) NOT NULL,
   `remarks` varchar(150) DEFAULT NULL,
-  `grand_total` decimal(10,0) NOT NULL,
+  `grand_total` decimal(10,2) NOT NULL,
   `date_time` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `purchases`
---
-
-INSERT INTO `purchases` (`id`, `supplier_id`, `total`, `discount`, `vat`, `remarks`, `grand_total`, `date_time`) VALUES
-(1, 1, '60', '3', '60', 'Thank you For your Purchase! Remember Once items are taken, it will not be refunded.', '117', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -99,18 +78,11 @@ INSERT INTO `purchases` (`id`, `supplier_id`, `total`, `discount`, `vat`, `remar
 CREATE TABLE `purchase_details` (
   `id` bigint(20) NOT NULL,
   `item_id` bigint(20) NOT NULL,
-  `rate` bigint(20) NOT NULL,
-  `amount` bigint(20) NOT NULL,
+  `rate` decimal(18,2) NOT NULL,
+  `amount` decimal(18,2) NOT NULL,
   `qty` bigint(20) NOT NULL,
   `purchase_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `purchase_details`
---
-
-INSERT INTO `purchase_details` (`id`, `item_id`, `rate`, `amount`, `qty`, `purchase_id`) VALUES
-(1, 1, 30, 30, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -136,12 +108,12 @@ CREATE TABLE `sales` (
 
 CREATE TABLE `sale_details` (
   `SaleDetailId` bigint(20) NOT NULL,
-  `CustomerName` varchar(50) NOT NULL,
   `ItemName` varchar(50) NOT NULL,
   `Qty` int(11) NOT NULL,
-  `Total` bigint(20) NOT NULL,
+  `Total` decimal(18,2) NOT NULL,
   `SaleId` bigint(20) NOT NULL,
-  `Price` bigint(20) NOT NULL
+  `Price` bigint(20) NOT NULL,
+  `item_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -159,14 +131,6 @@ CREATE TABLE `suppliers` (
   `status` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `suppliers`
---
-
-INSERT INTO `suppliers` (`id`, `name`, `address`, `email`, `phone`, `status`) VALUES
-(1, 'Kaman', 'BTM', 'kaman@gmail.com', '6781231231', 'Active'),
-(2, 'KK', 'hjk', 'ghj@ma.com', '567891211', 'Active');
-
 -- --------------------------------------------------------
 
 --
@@ -178,14 +142,6 @@ CREATE TABLE `unit` (
   `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `status` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `unit`
---
-
-INSERT INTO `unit` (`id`, `name`, `status`) VALUES
-(1, 'Kg', 'Active'),
-(2, 'gram', 'Active');
 
 --
 -- Indexes for dumped tables
@@ -248,25 +204,25 @@ ALTER TABLE `unit`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `CusId` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `CusId` int(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `items`
 --
 ALTER TABLE `items`
-  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(10) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `purchases`
 --
 ALTER TABLE `purchases`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `purchase_details`
 --
 ALTER TABLE `purchase_details`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `sales`
@@ -284,13 +240,13 @@ ALTER TABLE `sale_details`
 -- AUTO_INCREMENT for table `suppliers`
 --
 ALTER TABLE `suppliers`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `unit`
 --
 ALTER TABLE `unit`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

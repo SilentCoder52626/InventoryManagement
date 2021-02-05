@@ -6,30 +6,35 @@ using InventoryLibrary.Source.Extension;
 using InventoryLibrary.Source.Repository.Interface;
 using System;
 using System.Threading.Tasks;
+using InventoryLibrary.Repository.Interface;
+using InventoryLibrary.Source.Entity;
 
 namespace InventoryLibrary.Services.Implementation
 {
     public class SaleService : SaleServiceInterface
     {
         private readonly SaleRepositoryInterface _saleRepo;
+        private readonly ItemRepositoryInterface _itemRepo;
         private readonly SaleDetailRepositoryInterface _saleDetailRepo;
-        public SaleService(SaleRepositoryInterface _saleRepo, SaleDetailRepositoryInterface _saleDetailRepo)
+        public SaleService(SaleRepositoryInterface _saleRepo, SaleDetailRepositoryInterface _saleDetailRepo, ItemRepositoryInterface itemRepo)
         {
             this._saleRepo = _saleRepo;
             this._saleDetailRepo = _saleDetailRepo;
+            _itemRepo = itemRepo;
         }
         public async Task Create(SaleCreateDTO dto)
         {
             using var tx = TransactionScopeHelper.GetInstance();
 
-            var sale = new Sale();
+            var sale = new Sale
+            {
+                total = dto.total,
+                CusId = dto.CusId,
+                netTotal = dto.netTotal,
+                discount = dto.discount,
+                SalesDate = DateTime.Now
+            };
 
-            sale.vat = dto.vat;
-            sale.total = dto.total;
-            sale.CusId = dto.CusId;
-            sale.netTotal = dto.netTotal;
-            sale.discount = dto.discount;
-            sale.timestamp = dto.timestamp;
 
             await _saleRepo.InsertAsync(sale).ConfigureAwait(true);
 
@@ -37,15 +42,17 @@ namespace InventoryLibrary.Services.Implementation
 
             foreach (var SaleData in dto.SaleDetails)
             {
-                var SaleDetail = new SaleDetails();
-
-                SaleDetail.Qty = SaleData.Qty;
-                SaleDetail.Total = SaleData.Total;
-                SaleDetail.Price = SaleData.Price;
-                SaleDetail.SaleId = sale.SaleId;
-                SaleDetail.ItemName = SaleData.ItemName;
-                SaleDetail.CustomerName = SaleData.CustomerName;
-
+                var SaleDetail = new SaleDetails
+                {
+                    Qty = SaleData.Qty,
+                    Total = SaleData.Total,
+                    Price = SaleData.Price,
+                    SaleId = sale.SaleId,
+                    ItemName = SaleData.ItemName
+                };
+                var item = await _itemRepo.GetById(SaleData.ItemId);
+                item.DecreaseQty(SaleData.Qty);
+                await _itemRepo.UpdateAsync(item);
                 await _saleDetailRepo.InsertAsync(SaleDetail).ConfigureAwait(true);
             }
 

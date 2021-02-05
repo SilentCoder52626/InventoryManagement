@@ -5,26 +5,26 @@
 }
 
 <div class="container mt-5">
+    <h2 class="text-left">Create Purchase</h2>
     <div class="row">
 
         <div class="col-6">
-            
+
             <div class="form-group shadow p-3 ">
                 <label class="font-weight-bold" asp-for="SupplierId"></label>
-                @Html.DropDownListFor(a => a.SupplierId, new SelectList(Model.Suppliers, "Id", "Name"), new { @class = "form-control", id = "SupplierId" })
+                <select asp-for="SupplierId" asp-items="@Model.SupplierSelectList" class="form-control required" id="SupplierId"></select>
                 <span asp-validation-for="SupplierId" class="text-danger"></span>
-                <a class="btn mt-2 btn-info text-white btn-sm small" id="change" hidden> change </a>
             </div>
 
-            <form class="shadow rounded border-primary border-left  text-dark  p-4" method="post" asp-controller="Purchase" asp-action="Create">
+            <form class="shadow rounded border-primary border-left  text-dark  p-4" method="post">
                 <div class="form-group">
                     <label class="font-weight-bold" asp-for="ItemId"></label>
-                    @Html.DropDownListFor(a => a.ItemId, new SelectList(Model.Items, "Id", "Name"), new { @class = "form-control", id = "item_id" })
+                    <select asp-items="@Model.ItemSelectList" asp-for="ItemId" class="form-control" id="item_id"></select>
                 </div>
 
                 <div class="form-group">
                     <label class="font-weight-bold col-form-label"> Rate: </label>
-                    <input id="rate" class="form-control" />
+                    <input id="rate" min="1" value="1" class="form-control" />
                 </div>
 
                 <div class="form-group">
@@ -33,14 +33,14 @@
                 </div>
 
 
-                <button id="button" type="submit" class="btn btn-primary"><i class="fas fa-plus"></i></button>
+                <button id="button" type="submit" class="btn btn-primary"><i class="fa fa-plus"></i></button>
             </form>
         </div>
 
         <div class="col-6">
-            <div class="table-responsive" style="max-height:300px; overflow-y:scroll;">
-                <table class="table detail-table">
-                    <thead class="shadow ">
+            <div class="table-responsive rounded-sm " style="height: 210px; max-height: 300px; overflow-y: scroll;">
+                <table class="table">
+                    <thead class="thead-dark ">
                         <tr>
                             <th>Item</th>
                             <th>Quantity</th>
@@ -62,24 +62,19 @@
                     <li class="list-group-item bg active">Sale Detail</li>
 
                     <li class="list-group-item text-right ">
-                        Total:-
+                        Total &nbsp;
                         <input id="totalAmt" readonly />
                     </li>
 
                     <li class="list-group-item text-right ">
-                        V.A.T:-
-                        <input id="vat" readonly />
+
+                        Discount&nbsp;
+                        <input id="discount" value="0" min="0" />
                     </li>
-
-                    <li class="list-group-item text-right ">
-
-                        Discount:-
-                        <input  id="discount" value="20" />
-                        </li>
 
 
                     <li class="list-group-item text-right text-danger ">
-                        Grand Total: -
+                        Grand Total&nbsp;
                         <input id="grand" readonly />
                     </li>
 
@@ -87,13 +82,9 @@
 
 
 
-                <button id="btnSave" type="submit" class="btn btn-block btn-success"><i class="fas fa-save"></i></button>
+                <button id="btnSave" type="submit" class="btn btn-block btn-success"><i class="fa fa-save"></i></button>
             </form>
-            <li class="list-group-item text-right text-info ">
-                Remarks
-                <textarea class="form-control" id="remarks" ></textarea>
-                <button class="btn mt-2 btn-outline-info btn-sm" id="btnRemark"> Auto Add Remarks </button>
-            </li>
+
         </div>
     </div>
 
@@ -111,24 +102,42 @@
         $('#SupplierId').on('change', function (e) {
 
             $('#SupplierId').attr('disabled', true);
-            $('#change').attr('hidden', false);
 
 
         });
 
-        $("#change").on('click',
-            function(e) {
-                $('#SupplierId').attr('disabled', false);
-                $('#change').attr('hidden', true);
-
-            });
-
         $("#btnRemark").on('click',
             function(e) {
-                $('#remarks').append("Thank you For your Purchase! Remember Once items are taken, it will not be refunded.");
+                $('#remarks').append("Item Purchased..");
                 $('#btnRemark').attr('disabled', true);
             });
-
+        $('#qty').on('keyup',
+            function(e) {
+                e.preventDefault();
+                if ($("#qty").val() < 1) {
+                    $("#qty").val(1);
+                }
+            });
+        $('#rate').on('keyup',
+            function(e) {
+                e.preventDefault();
+                if ($("#qty").val() < 1) {
+                    $("#qty").val(1);
+                }
+            });
+        $('#discount').on('keyup',
+            function (e) {
+                e.preventDefault();
+                var total = $("#totalAmt").val();
+                var discount = $("#discount").val();
+                if (parseFloat(discount) < 0) {
+                    $("#discount").val(0);
+                }
+                if (parseFloat(discount) > parseFloat(total)) {
+                    $("#discount").val(total);
+                }
+                calculateTotal();
+            });
 
         function checkDuplicate(itemId) {
             event.preventDefault();
@@ -137,7 +146,6 @@
 
                 row = $(this).closest('tr');
                 find_id = parseInt(row.find('td').eq(0).text());
-                console.log("find id :- " + find_id);
 
                 if (itemId == find_id) {
                     alert("You have entered the same Item!");
@@ -165,12 +173,12 @@
                         <td id="item-id" hidden> ${itemId} </td > 
                         <td id="item-name"> ${itemName} </td>
                         <td id="qty-list">
-                            <i id="minus" class="fas mr-2 fa-minus-circle"></i> <span id="q"> ${qty} </span> <i id="plus" class="fas ml-2 fa-plus-circle"></i>
+                            <i id="minus" class="fa mr-2 fa-minus-circle"></i> <span id="q"> ${qty} </span> <i id="plus" class="fa ml-2 fa-plus-circle"></i>
                         </td>
                         <td id="rate-list"> ${rate} </td >
                         <td id="amt"> ${amt} </td>
                         <td>
-                            <button id="removeButton" class="btn btn-danger"> <i class="fas fa-trash"></i> </button>
+                            <button id="removeButton" class="btn btn-danger"> <i class="fa fa-trash"></i> </button>
                         </td>
                     </tr >`
                 );
@@ -193,7 +201,7 @@
                 qty = parseInt(row.find("td").eq(2).text());
                 qty--;
 
-                if (qty >= 0) {
+                if (qty > 0) {
 
                     amt = rate * qty;
 
@@ -251,12 +259,11 @@
                 if (!isNaN(value)) {
                     total += value;
                 }
-                var vat = total * (13 / 100);
                 var discount = $('#discount').val();
-                var grand = (parseInt(total, 10) + parseInt(vat, 10)) - parseInt(discount, 10);
-                $('#grand').val(grand);
-                $('#totalAmt').val(total);
-                $('#vat').val(vat);
+                var grand = (parseFloat(total) - parseFloat(discount));
+                console.log(grand);
+                $('#grand').val(grand.toFixed(2));
+                $('#totalAmt').val(total.toFixed(2));
             });
         }
 
@@ -291,7 +298,6 @@
                 Total: $('#totalAmt').val(),
                 GrandTotal: $('#grand').val(),
                 Discount: $('#discount').val(),
-                Vat: $('#vat').val(),
                 Remarks: $('#remarks').val(),
                 PurchaseDetails: [],
 
@@ -317,7 +323,7 @@
                 dataType: 'json',
                 success: function (data, status) {
                     console.log(data);
-                    alert("Purchase Saved Successfully!")
+                    alert("Purchase Saved Successfully!");
                     window.location.href = `/Purchase/Index`;
 
                 }

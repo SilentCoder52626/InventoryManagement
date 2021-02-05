@@ -31,23 +31,24 @@ namespace InventoryLibrary.Source.Services.Implementation
         {
             using var tx = TransactionScopeHelper.GetInstance();
 
-            var supplier = await _supplierRepo.GetById(dto.SupplierId).ConfigureAwait(false) ?? throw new CustomerNotFoundException("Supplier has not been found!!!");
+            var supplier = await _supplierRepo.GetById(dto.SupplierId).ConfigureAwait(false) ?? throw new Exception("Supplier not found!!!");
 
-            var item = await _itemRepo.GetById(dto.ItemId).ConfigureAwait(false) ?? throw new CustomerNotFoundException("item has not been found!");
 
-            var purchase = new Purchase(supplier, dto.Total, dto.GrandTotal, dto.Discount, dto.Vat)
-            {
-                Remarks = dto.Remarks
-            };
+            var purchase = new Purchase(supplier, dto.Total, dto.GrandTotal, dto.Discount);
 
             foreach (var data in dto.PurchaseDetails)
             {
+                var item = await _itemRepo.GetById(data.ItemId).ConfigureAwait(false) ?? throw new Exception("Item not found!");
+
                 purchase.AddPurchaseDetails(item, data.Qty, data.Rate);
+                item.AddQty(data.Qty);
+                item.UpdateRate(data.Rate);
+                await _itemRepo.UpdateAsync(item).ConfigureAwait(false);
             }
 
             await _purchaseRepo.InsertAsync(purchase).ConfigureAwait(false);
 
-            
+
 
             tx.Complete();
 

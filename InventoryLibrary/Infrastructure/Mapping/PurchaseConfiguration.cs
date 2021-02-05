@@ -26,21 +26,11 @@ namespace InventoryLibrary.Infrastructure.Mapping
                 .ToTable("purchases")
                 .Property(c => c.Total)
                 .HasColumnName("total");
-
-            modelBuilder
-                .ToTable("purchases")
-                .Property(c => c.Remarks)
-                .HasColumnName("remarks");
             
             modelBuilder
                 .ToTable("purchases")
                 .Property(c => c.Discount)
                 .HasColumnName("discount");
-            
-            modelBuilder
-                .ToTable("purchases")
-                .Property(c => c.Vat)
-                .HasColumnName("vat");
             
             modelBuilder
                 .ToTable("purchases")

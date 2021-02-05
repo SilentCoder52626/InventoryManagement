@@ -27,9 +27,12 @@ namespace InventoryLibrary.AppDbContext
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new SupplierConfiguration());
+            modelBuilder.ApplyConfiguration(new UnitConfiguration());
             modelBuilder.ApplyConfiguration(new ItemConfiguration());
             modelBuilder.ApplyConfiguration(new PurchaseConfiguration());
             modelBuilder.ApplyConfiguration(new PurchaseDetailConfiguration());
+            modelBuilder.ApplyConfiguration(new SalesConfiguration());
+            modelBuilder.ApplyConfiguration(new SalesDetailConfiguration());
 
         }
     }

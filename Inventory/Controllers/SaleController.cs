@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Inventory.Controllers
 {
@@ -45,14 +46,15 @@ namespace Inventory.Controllers
 
                 foreach (var data in sales)
                 {
+                    var Customer = await _customerRepo.GetById(data.CusId).ConfigureAwait(false);
                     var model = new SaleIndexViewModel()
                     {
-                        vat = data.vat,
                         CusId = data.CusId,
                         SaleId = data.SaleId,
-                        CustomerName = data.Customers.FullName,
+                        CustomerName = Customer?.FullName,
                         netTotal = data.netTotal,
-                        discount = data.discount
+                        discount = data.discount,
+                        date = data.SalesDate
                     };
 
 
@@ -82,35 +84,56 @@ namespace Inventory.Controllers
 
             return Json(price);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAvailableQty(int id)
+        {
+            var Item = (await _itemRepo.GetById(id).ConfigureAwait(true));
+
+            decimal qty = 0;
+            if (Item != null)
+                qty = Item.AvailableQty;
+
+            return Json(qty);
+        }
 
         public async Task<IActionResult> GetDetails(int id)
         {
-            var sale = (await _saleDetailRepo.GetQueryable()).Where(a => a.SaleId == id).ToList();
-            var data = sale.Select(a => new
+            try
             {
-                a.SaleDetailId,
-                a.ItemName,
-                a.Price,
-                a.Qty,
-                a.Total,
+                var sale = (await _saleDetailRepo.GetQueryable()).Where(a => a.SaleId == id).ToList();
+                var data = sale.Select(a => new
+                {
+                    a.SaleDetailId,
+                    a.ItemName,
+                    a.Price,
+                    a.Qty,
+                    a.Total,
 
-            });
-            return Json(sale);
+                });
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                _toastNotification.AddErrorToastMessage(ex.Message);
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         public async Task<IActionResult> Create()
         {
-            var sale = new SaleIndexViewModel();
+            var sale = new SaleIndexViewModel
+            {
+                customers = await _customerRepo.GetAllAsync().ConfigureAwait(true),
+                items = (await _itemRepo.GetAllAsync().ConfigureAwait(true)).Where(a=>a.IsActive()).ToList()
+            };
 
-            sale.customers = await _customerRepo.GetAllAsync().ConfigureAwait(true);
-            sale.items = await _itemRepo.GetAllAsync().ConfigureAwait(true);
 
             return View(sale);
 
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(SaleIndexViewModel allSales)
+        public async Task<IActionResult> Create(SaleCreateViewModel allSales)
         {
             try
             {
@@ -119,31 +142,27 @@ namespace Inventory.Controllers
                     var sale = new SaleCreateDTO()
                     {
                         CusId = allSales.CusId,
-                        ItemId = allSales.ItemId,
                         discount = allSales.discount,
-                        vat = allSales.vat,
-                        total = allSales.total,
+                        total = allSales.netTotal,
                         netTotal = allSales.netTotal,
                     };
 
-                    var SaleDetails = new List<InventoryLibrary.Source.Dto.SaleDetail.SaleDetailCreateDTO>();
+                    var saleDetails = new List<InventoryLibrary.Source.Dto.SaleDetail.SaleDetailCreateDTO>();
                     foreach (var data in allSales.SalesDetails)
                     {
-                        var dto = new SaleDetailCreateDTO();
+                        var dto = new SaleDetailCreateDTO
+                        {
+                            ItemName = data.ItemName ,Qty = data.Qty, Total = data.Total, Price = data.Price, ItemId = data.ItemId
+                        };
 
-                        dto.CustomerName = data.CustomerName;
-                        dto.ItemName = data.ItemName;
-                        dto.Qty = data.Qty;
-                        dto.Total = data.Total;
-                        dto.Price = data.Price;
 
-                        SaleDetails.Add(dto);
+                        saleDetails.Add(dto);
                     }
 
-                    sale.SaleDetails = SaleDetails;
+                    sale.SaleDetails = saleDetails;
                     await _saleService.Create(sale).ConfigureAwait(true);
 
-                    _toastNotification.AddSuccessToastMessage("Sucessfully Created Sale!");
+                    _toastNotification.AddSuccessToastMessage("Successfully Created Sale!");
                     return Json(sale);
 
                 }
@@ -154,10 +173,12 @@ namespace Inventory.Controllers
                 _toastNotification.AddErrorToastMessage(ex.Message);
             }
 
-            allSales.customers = await _customerRepo.GetAllAsync().ConfigureAwait(true);
-            allSales.items = await _itemRepo.GetAllAsync().ConfigureAwait(true);
-
-            return View(allSales);
+            var saleView = new SaleIndexViewModel
+            {
+                customers = await _customerRepo.GetAllAsync().ConfigureAwait(true),
+                items = (await _itemRepo.GetAllAsync().ConfigureAwait(true)).Where(a => a.IsActive()).ToList()
+            };
+            return View(saleView);
         }
     }
 

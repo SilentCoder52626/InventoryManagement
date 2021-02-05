@@ -5,6 +5,7 @@
 }
 
 <div class="container-fluid mt-2">
+    <h1 class="text-center">Sales</h1>
     <div class="row">
         <div class="col-md-2">
             <a class="btn btn-info btn-block" asp-controller="Sale" asp-action="Create"><i class="fa fa-plus-circle"></i> Create New Sale </a>
@@ -15,32 +16,32 @@
             <div class="table table-responsive mt-4">
                 <table id="mainTable" class="table mt-3 ">
                     <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Customer</th>
-                        <th scope="col">Discount</th>
-                        <th scope="col">Net Total</th>
-                        <th scope="col">TaxAmount</th>
-                        <th scope="col">Action</th>
-                    </tr>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Customer</th>
+                            <th scope="col">Discount</th>
+                            <th scope="col">Net Total</th>
+                            <th scope="col">Action</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    @{
-                        foreach (var data in Model)
-                        {
-                            <tr>
-                                <td scope="row" class="sale-id">@data.SaleId</td>
-                                <td>@data.CustomerName</td>
-                                <td>@data.discount</td>
-                                <td>@data.netTotal</td>
-                                <td>@data.vat</td>
-                                <td>
-                                    <a class="btn btn-info btn-details text-white btn-sm" data-toggle="modal" data-target="#myModal"> Details </a>
-                                </td>
-                            </tr>
+                        @{
+                            foreach (var data in Model)
+                            {
+                                <tr>
+                                    <td scope="row" class="sale-id">@data.SaleId</td>
+                                    <td>@data.date</td>
+                                    <td>@data.CustomerName</td>
+                                    <td>@data.discount</td>
+                                    <td>@data.netTotal</td>
+                                    <td>
+                                        <a class="btn btn-info btn-details text-white btn-sm details" data-toggle="modal" data-target="#myModal"> Details </a>
+                                    </td>
+                                </tr>
 
+                            }
                         }
-                    }
                     </tbody>
                 </table>
             </div>
@@ -48,27 +49,25 @@
 
         <div class="modal fade" id="myModal" role="dialog">
             <div class="modal-dialog  bg-light ">
-                <div class="modal-header bg-danger">
+                <div class="modal-header ">
+                    <b>Sales Details</b>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body bg-light">
-                    <table class="table modal-table">
+                    <table class="table table-bordered modal-table">
                         <thead class="thead-dark">
-                        <tr>
-                            <th> # </th>
-                            <th> Item Name </th>
-                            <th> Qty </th>
-                            <th> Price </th>
-                            <th> Total</th>
-                        </tr>
+                            <tr>
+                                <th> # </th>
+                                <th> Item Name </th>
+                                <th> Qty </th>
+                                <th> Price </th>
+                                <th> Total</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr></tr>
+                            <tr></tr>
                         </tbody>
                     </table>
-                </div>
-                <div class="modal-footer text-white-50 bg-dark">
-                    
                 </div>
             </div>
         </div>
@@ -79,9 +78,10 @@
 @section scripts{
     <script>
         $(document).ready(function () {
+            
 
             $("#mainTable").DataTable({
-                "pageLength": 5
+                "pageLength": 10
             });
 
             $('.btn-details').on('click', function () {
@@ -89,20 +89,18 @@
                 event.preventDefault();
 
                 var id = $(this).closest('tr').find('td').eq(0).text();
-                var url = `Sale/GetDetails?id=${id}`;
-
-                console.log(id);
+                var url = 'Sale/GetDetails?id='+id+"";
+                
 
                 $.ajax({
                     url: url,
                     type: 'GET',
                     dataType: 'json',
                     success: function (data) {
-
-                        console.log(data);
+                        
                         $('display').css({ 'display': "block" });
                         $('.modal-table tbody tr').remove();
-
+                        console.log(data);
                         for (var i = 0; i < data.length; i++) {
                             $('.modal-table tbody').append(
                                 `
@@ -114,8 +112,9 @@
                                     <td>${data[i].total}</td>
                                 </tr>
                                 `
-                            )
+                            );
                         }
+                        $('#myModel').modal('show'); 
                     }
 
                 });

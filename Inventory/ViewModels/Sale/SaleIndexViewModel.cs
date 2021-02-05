@@ -1,4 +1,5 @@
-﻿using Inventory.ViewModels.SaleDetail;
+﻿using System;
+using Inventory.ViewModels.SaleDetail;
 using InventoryLibrary.Entity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
@@ -10,26 +11,24 @@ namespace Inventory.ViewModels.Sale
     {
         public long SaleId { get; set; }
 
-        [Display(Name = "Customer Name: -")]
+        [Display(Name = "Customer")]
         public long CusId { get; set; }
 
         public string? CustomerName { get; set; }
 
-        [Display(Name = "Item Name:-")]
+        [Display(Name = "Item Name")]
         public long ItemId { get; set; }
 
         public string? ItemName { get; set; }
 
-        [Display(Name = "Total:- ")]
+        [Display(Name = "Total ")]
         [Required]
         public long total { get; set; }
 
         public long discount { get; set; }
 
         public long netTotal { get; set; }
-
-        [Display(Name = "Tax Amount")]
-        public decimal vat { get; set; }
+        public DateTime date { get; set; }
 
         public List<SaleDetailIndexViewModel> SalesDetails { get; set; }
         public IList<Customer> customers { get; set; } = new List<Customer>();

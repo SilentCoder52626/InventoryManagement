@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using InventoryLibrary.Repository.Interface;
+using InventoryLibrary.Source.Entity;
 using Xunit;
 
 namespace InventoryLibrary.Source.Test.Service
@@ -16,6 +18,7 @@ namespace InventoryLibrary.Source.Test.Service
     public class SaleServiceTest
     {
         private readonly Mock<SaleRepositoryInterface> _saleRepo = new Mock<SaleRepositoryInterface>();
+        private readonly Mock<ItemRepositoryInterface> _itemRepo = new Mock<ItemRepositoryInterface>();
         private readonly Mock<SaleDetailRepositoryInterface> _saleDetailRepo = new Mock<SaleDetailRepositoryInterface>();
 
         private SaleService _saleService;
@@ -42,7 +45,7 @@ namespace InventoryLibrary.Source.Test.Service
 
         public SaleServiceTest()
         {
-            _saleService = new SaleService(_saleRepo.Object, _saleDetailRepo.Object);
+            _saleService = new SaleService(_saleRepo.Object, _saleDetailRepo.Object, _itemRepo.Object);
             _saleCreateDto = new SaleCreateDTO();
             _saleDetailCreateDto = new SaleDetailCreateDTO();
             _sale = new Sale();
@@ -52,12 +55,10 @@ namespace InventoryLibrary.Source.Test.Service
         [Fact]
         public async Task Test_OnCreateSale_Trigger()
         {
-            _saleCreateDto.ItemId = item_id;
             _saleCreateDto.CusId = cus_id;
             _saleCreateDto.discount = discount;
             _saleCreateDto.total = total;
             _saleCreateDto.netTotal = net_total;
-            _saleCreateDto.vat = vat;
             _saleCreateDto.timestamp = timestamp;
             _sale.SaleId = 1;
 
@@ -66,7 +67,6 @@ namespace InventoryLibrary.Source.Test.Service
                 new SaleDetailCreateDTO()
                 {
                     SaleId = 1,
-                    CustomerName = customer_name,
                     Total = total,
                     Qty = qty,
                     Price = price,
@@ -78,18 +78,16 @@ namespace InventoryLibrary.Source.Test.Service
 
             _saleRepo.Verify(a => a.InsertAsync(It.Is<Sale>(b =>
                 b.CusId.Equals(_saleCreateDto.CusId) &&
-                b.vat.Equals(_saleCreateDto.vat) &&
                 b.total.Equals(_saleCreateDto.total) &&
                 b.netTotal.Equals(_saleCreateDto.netTotal) &&
                 b.discount.Equals(_saleCreateDto.discount) &&
-                b.timestamp.Equals(_saleCreateDto.timestamp)
+                b.SalesDate.Equals(_saleCreateDto.timestamp)
 
             )), Times.Once);
 
             _saleDetailRepo.Verify(a => a.InsertAsync(It.Is<SaleDetails>(b =>
 
               b.Price.Equals(_saleCreateDto.SaleDetails.First().Price) &&
-              b.CustomerName.Equals(_saleCreateDto.SaleDetails.First().CustomerName) &&
               b.ItemName.Equals(_saleCreateDto.SaleDetails.First().ItemName) &&
               b.Qty.Equals(_saleCreateDto.SaleDetails.First().Qty)
 

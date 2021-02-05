@@ -4,18 +4,20 @@
     Layout = "_Layout";
 }
 
-<div class="container mt-2">
+<div class="container mt-5">
+    <h2 class="text-left">Create Sales</h2>
     <div class="row">
 
         <div class="col-6">
-            <form class="rounded border-success border-left  text-dark alert-info p-4" method="post" asp-controller="Sale" asp-action="Create">
-                <div class="form-group">
-                    <label asp-for="CusId"></label>
-                    <select asp-for="CusId" asp-items="@Model.CustomerSelectList" class="form-control">
-                        <option value="0">-Select-</option>
-                    </select>
-                    <span asp-validation-for="CusId" class="text-danger"></span>
-                </div>
+            <div class="form-group shadow rounded border-primary border-left  text-dark  p-4">
+                <label class="font-weight-bold" asp-for="CusId"></label>
+                <select asp-for="CusId" id="customer" asp-items="@Model.CustomerSelectList" class="form-control">
+                    <option value="0">-Select-</option>
+                </select>
+                <span asp-validation-for="CusId" class="text-danger"></span>
+            </div>
+
+            <form class="shadow rounded border-primary border-left  text-dark  p-4" method="post" asp-controller="Sale" asp-action="Create">
 
                 <div class="form-group">
                     <label asp-for="ItemId"></label>
@@ -23,21 +25,25 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="col-form-label">Available Qty</label>
+                    <input id="available_qty" readonly class="form-control" />
+                </div> 
+                <div class="form-group">
                     <label class="col-form-label">Price:-</label>
                     <input id="price" readonly class="form-control" />
                 </div>
 
                 <div class="form-group">
                     <label class="col-form-label"> Quantity</label>
-                    <input id="qty" class="form-control" placeholder="Input quantity" />
+                    <input id="qty" min="1" value="1" class="form-control" placeholder="Input quantity" />
                 </div>
 
                 <button id="btn" type="submit" class="btn btn-info">Add to List</button>
             </form>
         </div>
 
-        <div class="col-6">
-            <div class="table-responsive" style="max-height:300px; overflow-y:scroll;">
+        <div class="col-6 ">
+            <div class="table-responsive rounded-sm " style="height: 210px; max-height: 300px; overflow-y: scroll;">
                 <table class="table">
                     <thead class="thead-dark">
                         <tr>
@@ -53,28 +59,30 @@
                 </table>
             </div>
 
-            <form method="POST">
+            <form method="POST" class="shadow rounded   text-dark ">
                 <ul class="list-group mt-3">
 
                     <li class="list-group-item bg-info active">Sale Detail</li>
 
                     <li class="list-group-item text-right ">
-                        Total:-
+                        Total&nbsp;
                         <input id="totalAmt" readonly="readonly" />
                     </li>
 
                     <li class="list-group-item text-right ">
-                        Discount:-
-                        <input id="discount" min-value="0" value="0" type="number" />
+                        Discount &nbsp;
+                        <input id="discount" min="0" value="0" type="number" />
                     </li>
 
                     <li class="list-group-item text-right text-danger ">
-                        Net Total:-
+                        Net Total &nbsp;
                         <input id="net" readonly="readonly" />
                     </li>
 
-                    <button id="btnSave" type="submit" class="btn btn-block btn-success">Save Sale</button>
                 </ul>
+
+                <button id="btnSave" type="submit" class="btn btn-block btn-success">Save Sale</button>
+
             </form>
 
 
@@ -88,7 +96,13 @@
 {
     <script>
         $(document).ready(function () {
-
+            $('#qty').on('keyup',
+                function(e) {
+                    e.preventDefault();
+                    if ($("#qty").val() < 1) {
+                        $("#qty").val(1);
+                    }
+                });
             $('#productDrop').on('change',
                 function (e) {
                     e.preventDefault();
@@ -106,6 +120,18 @@
                             $('#price').val(data);
                         }
                     });
+                    var url = `/Sale/GetAvailableQty?id=${p_id}`;
+
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+                            $('#available_qty').val(data);
+                        }
+                    });
+
+
                 });
 
             function checkDuplicate(itemId) {
@@ -133,6 +159,9 @@
                     e.preventDefault();
                     var total = $("#totalAmt").val();
                     var discount = $("#discount").val();
+                    if (parseFloat(discount) < 0) {
+                        $("#discount").val(0);
+                    }
                     if (parseFloat(discount) > parseFloat(total)) {
                         $("#discount").val(total);
                     }
@@ -141,11 +170,19 @@
 
             $('#btn').click(function () {
                 event.preventDefault();
+
                 var item_name = $('#productDrop :selected ').text();
                 var item_id = $('#productDrop :selected ').val();
-                var cus_name = $('#cusName :selected ').text();
                 var price = $('#price').val();
+                var availableQty = $('#available_qty').val();
                 var qty = $('#qty').val();
+                if (parseInt(qty) > parseInt(availableQty)) {
+                    console.log(qty);
+                    console.log(availableQty);
+                    alert("Not enough available qty.");
+                    return;
+                }
+
                 var total = price * qty;
                 if (checkDuplicate(item_id)) {
                     $('table tbody').append(
@@ -156,7 +193,7 @@
                         <td id="qty-list">
                                 <i id="minus" class="fa fa-minus-circle mr-2"></i> <span id="q"> ${qty} </span> <i id="plus" class="fa ml-2 fa-plus-circle"></i>
                             </td>
-                        <td id="price"> ${price} </td >
+                        <td id="price" > ${price} </td >
                         <td id="total"> ${total} </td>
                         <td> <button id="removeButton" class="btn btn-danger"> Remove </button> </td>
                         </tr >`
@@ -175,7 +212,7 @@
                     qty = parseInt(row.find("td").eq(2).text());
                     qty--;
 
-                    if (qty >= 0) {
+                    if (qty > 0) {
 
                         amt = rate * qty;
 
@@ -254,10 +291,7 @@
 
                     var url = `/Sale/Create`;
                     var data = {
-                        CusId: $("#cusName").val(),
-                        ItemId: $("#productDrop").val(),
-                        total: $("#totalAmt").val(),
-                        vat: $("#vat").val(),
+                        CusId: $('#customer :selected ').val(),
                         netTotal: $("#net").val(),
                         discount: $("#discount").val(),
                         SalesDetails: [],
@@ -265,14 +299,13 @@
 
                     $("table>tbody>tr").each(function () {
 
-                        console.log("triggered each func.");
 
                         data.SalesDetails.push({
                             ItemName: $(this).find("#itemName").text(),
-                            CustomerName: $(this).find("#customerName").text(),
-                            Qty: $(this).find("#qty").text(),
+                            ItemId: $(this).find("#item-id").text(),
+                            Qty: $(this).find("#qty-list").text(),
                             Price: $(this).find("#price").text(),
-                            Total: $(this).find("#total").text(),
+                            Total: $(this).find("#total").text()
 
                         });
 

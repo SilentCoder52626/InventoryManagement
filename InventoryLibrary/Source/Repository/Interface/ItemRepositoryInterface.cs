@@ -1,10 +1,10 @@
-﻿using InventoryLibrary.Base;
+﻿using System.Threading.Tasks;
+using InventoryLibrary.Base;
 using InventoryLibrary.Entity;
 
 namespace InventoryLibrary.Repository.Interface
 {
     public interface ItemRepositoryInterface : BaseRepositoryInterface<Item>
     {
-
     }
 }

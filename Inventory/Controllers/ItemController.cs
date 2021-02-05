@@ -58,11 +58,11 @@ namespace Inventory.Controllers
                 if (ModelState.IsValid)
                 {
                     var Unit = await _unitRepo.GetById(model.UnitId).ConfigureAwait(true);
-                    var item = new UnitCreateDTO { ItemName = model.ItemName, Price = model.Price, Unit = Unit};
+                    var item = new UnitCreateDTO { ItemName = model.ItemName, Price = model.Price, Unit = Unit };
 
 
                     await _itemService.Create(item).ConfigureAwait(true);
-                    _toastNotification.AddSuccessToastMessage("Sucessfully Created Item :- " + item.ItemName);
+                    _toastNotification.AddSuccessToastMessage("Successfully Created Item :- " + item.ItemName);
 
                     return RedirectToAction("Index");
                 }
@@ -90,7 +90,11 @@ namespace Inventory.Controllers
 
             foreach (var data in Item)
             {
-                var model = new ItemIndexViewModel { ItemId = data.Id, Status = data.Status, Name = data.Name, UnitName = data.Unit.Name, Rate = data.Rate};
+                var model = new ItemIndexViewModel
+                {
+                    ItemId = data.Id, Status = data.Status, Name = data.Name, UnitName = data.Unit.Name,
+                    Rate = data.Rate, AvailableQty = data.AvailableQty
+                };
                 indexViewModel.Add(model);
             }
 
@@ -121,7 +125,7 @@ namespace Inventory.Controllers
             try
             {
                 var Unit = await _unitRepo.GetById(model.UnitId).ConfigureAwait(true);
-                var item = new ItemUpdateDTO { ItemId = model.ItemId, Name = model.Name, Price = model.Rate, Unit = Unit};
+                var item = new ItemUpdateDTO { ItemId = model.ItemId, Name = model.Name, Price = model.Rate, Unit = Unit };
 
 
                 await _itemService.Update(item).ConfigureAwait(true);

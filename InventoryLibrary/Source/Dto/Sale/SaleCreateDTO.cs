@@ -10,7 +10,6 @@ namespace InventoryLibrary.Dto.Sale
 
         public long CusId { get; set; }
 
-        public long ItemId { get; set; }
 
         public DateTime? timestamp { get; set; }
 
@@ -19,7 +18,6 @@ namespace InventoryLibrary.Dto.Sale
         public long discount { get; set; }
         public long netTotal { get; set; }
 
-        public decimal vat { get; set; }
 
         public List<SaleDetailCreateDTO> SaleDetails { get; set; }
 

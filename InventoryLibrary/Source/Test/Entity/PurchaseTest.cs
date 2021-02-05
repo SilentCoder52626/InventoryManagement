@@ -37,7 +37,7 @@ namespace InventoryLibrary.Source.Test.Entity
             unit = new Unit("as");
             _item     = new Item(unit,item_name,10);
             _supplier = new Supplier(name, address, email, phone);
-            _purchase = new Purchase(_supplier ,total, grand_total, discount, vat);
+            _purchase = new Purchase(_supplier ,total, grand_total, discount);
 
         }
 
@@ -48,7 +48,6 @@ namespace InventoryLibrary.Source.Test.Entity
             Assert.Equal(total, _purchase.Total);
             Assert.Equal(grand_total, _purchase.GrandTotal);
             Assert.Equal(discount, _purchase.Discount);
-            Assert.Equal(vat, _purchase.Vat);
         }
 
 
@@ -56,11 +55,9 @@ namespace InventoryLibrary.Source.Test.Entity
         [Fact]
         public void Test_Purchase_Calculate_With_Correct_Data()
         {
-            var vat = 210 - discount * (13 / 100);
-            var grand_total = vat + 210 - discount;
+            var grand_total = 210 - discount;
             _purchase.Calculate(amount);
             Assert.Equal(210, _purchase.Total);
-            Assert.Equal(vat, _purchase.Vat);
             Assert.Equal(discount, _purchase.Discount);
             Assert.Equal(grand_total, _purchase.GrandTotal);
         }

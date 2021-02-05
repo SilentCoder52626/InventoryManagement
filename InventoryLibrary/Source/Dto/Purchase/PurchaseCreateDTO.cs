@@ -9,7 +9,6 @@ namespace InventoryLibrary.Dto.Purchase
 
         public long PurchaseId { get; set; }
         public long SupplierId { get; set; }
-        public long ItemId { get; set; }
 
         public decimal Total { get; set; }
 
@@ -18,9 +17,7 @@ namespace InventoryLibrary.Dto.Purchase
         public string? Remarks { get; set; }
 
         public decimal Discount { get; set; }
-
-        public decimal Vat { get; set; }
-
+        
         public List<PurchaseDetailCreateDTO> PurchaseDetails { get; set; }
 
     }

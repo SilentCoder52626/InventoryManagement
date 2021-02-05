@@ -42,7 +42,7 @@ namespace InventoryLibrary.Source.Test.Service
         private readonly string phone = "9898989898";
         public PurchaseServiceTest()
         {
-            _purchase        = new Purchase(_supplier, total, grand_total, discount, vat);
+            _purchase        = new Purchase(_supplier, total, grand_total, discount);
             _purchaseService = new PurchaseService( _purchaseRepo.Object,  _supplierRepo.Object, _itemRepo.Object);
             _purchaseCreate  = new PurchaseCreateDTO();
             _purchaseDetailCreate = new PurchaseDetailCreateDTO();
@@ -58,7 +58,6 @@ namespace InventoryLibrary.Source.Test.Service
             _purchaseCreate.Discount   = 20;
             _purchaseCreate.GrandTotal = Convert.ToDecimal(90.4);
             _purchaseCreate.Total      = 100;
-            _purchaseCreate.Vat        = Convert.ToDecimal(10.4);
            
            
             _supplierRepo.Setup(a => a.GetById(It.IsAny<long>())).ReturnsAsync(_supplier);

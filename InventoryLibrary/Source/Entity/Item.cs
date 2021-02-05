@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using InventoryLibrary.Source.Entity;
 
@@ -36,7 +37,24 @@ namespace InventoryLibrary.Entity
 
         public string Name { get; protected set; }
         public decimal Rate { get; protected set; }
+        public long AvailableQty { get; protected set; }
 
+        public virtual void AddQty(long qty)
+        {
+            this.AvailableQty += qty;
+        }
+        public virtual void UpdateRate(decimal rate)
+        {
+            this.Rate = rate;
+        }
+        public virtual void DecreaseQty(long qty)
+        {
+            if (this.AvailableQty < qty)
+            {
+                throw new Exception($"Not Enough item quantity of {this.Name}.");
+            }
+            this.AvailableQty -= qty;
+        }
 
         public virtual void Enable()
         {

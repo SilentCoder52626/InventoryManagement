@@ -52,16 +52,14 @@ namespace Inventory.Controllers
                     GrandTotal = data.GrandTotal,
                     SupplierName = data.Suppliers.Name,
                     SupplierId = data.SupplierId,
-                    Vat = data.Vat,
-                    PurchaseDateTime = data.PurchaseDateTime,
+                    Date = data.PurchaseDateTime
                 };
 
                 indexViewModel.Add(purchase);
             }
             return View(indexViewModel);
         }
-
-        [Route("/getdetails/{id}")]
+        [HttpGet]
         public async Task<IActionResult> GetDetails(int id)
         {
             try
@@ -86,10 +84,12 @@ namespace Inventory.Controllers
 
         public async Task<IActionResult> Create()
         {
-            var purchase = new PurchaseIndexViewModel();
+            var purchase = new PurchaseIndexViewModel
+            {
+                Suppliers = await _supplierInterface.GetAllAsync().ConfigureAwait(true),
+                Items = (await _itemRepo.GetAllAsync().ConfigureAwait(true)).Where(a => a.IsActive()).ToList()
+            };
 
-            purchase.Suppliers = await _supplierInterface.GetAllAsync().ConfigureAwait(true);
-            purchase.Items = await _itemRepo.GetAllAsync().ConfigureAwait(true);
 
             return View(purchase);
         }
@@ -104,11 +104,9 @@ namespace Inventory.Controllers
                     var purchase = new PurchaseCreateDTO()
                     {
                         SupplierId = allPurchases.SupplierId,
-                        ItemId = allPurchases.ItemId,
                         Total = allPurchases.Total,
                         GrandTotal = allPurchases.GrandTotal,
                         Discount = allPurchases.Discount,
-                        Vat = allPurchases.Vat,
                         Remarks = allPurchases.Remarks
                     };
 
@@ -116,12 +114,11 @@ namespace Inventory.Controllers
 
                     foreach (var data in allPurchases.PurchaseDetails)
                     {
-                        var dto = new PurchaseDetailCreateDTO();
+                        var dto = new PurchaseDetailCreateDTO
+                        {
+                            ItemId = data.ItemId, Rate = data.Rate, Qty = data.Qty, Amount = data.Amount
+                        };
 
-                        dto.ItemId = data.ItemId;
-                        dto.Rate = data.Rate;
-                        dto.Qty = data.Qty;
-                        dto.Amount = data.Amount;
 
                         purchaseDetails.Add(dto);
                     }
@@ -137,7 +134,7 @@ namespace Inventory.Controllers
             }
 
             allPurchases.Suppliers = await _supplierInterface.GetAllAsync().ConfigureAwait(true);
-            allPurchases.Items = await _itemRepo.GetAllAsync().ConfigureAwait(true);
+            allPurchases.Items = (await _itemRepo.GetAllAsync().ConfigureAwait(true)).Where(a => a.IsActive()).ToList();
 
             return View(allPurchases);
 
