@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.1
+-- version 5.1.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 05, 2021 at 07:32 PM
--- Server version: 10.4.8-MariaDB
--- PHP Version: 7.3.11
+-- Generation Time: Sep 24, 2021 at 08:41 PM
+-- Server version: 10.4.19-MariaDB
+-- PHP Version: 8.0.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -40,6 +39,22 @@ CREATE TABLE `customers` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `customer_transaction`
+--
+
+CREATE TABLE `customer_transaction` (
+  `id` bigint(20) NOT NULL,
+  `customer_id` bigint(20) NOT NULL,
+  `amount` decimal(18,2) NOT NULL,
+  `amount_type` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `extraId` bigint(20) NOT NULL,
+  `transaction_date` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `items`
 --
 
@@ -61,11 +76,11 @@ CREATE TABLE `items` (
 CREATE TABLE `purchases` (
   `id` bigint(20) NOT NULL,
   `supplier_id` bigint(20) NOT NULL,
-  `total` decimal(20,2) NOT NULL,
-  `discount` decimal(20,2) NOT NULL,
-  `vat` decimal(20,2) NOT NULL,
+  `total` decimal(20,0) NOT NULL,
+  `discount` decimal(20,0) NOT NULL,
+  `vat` decimal(20,0) NOT NULL,
   `remarks` varchar(150) DEFAULT NULL,
-  `grand_total` decimal(10,2) NOT NULL,
+  `grand_total` decimal(10,0) NOT NULL,
   `date_time` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -81,7 +96,8 @@ CREATE TABLE `purchase_details` (
   `rate` decimal(18,2) NOT NULL,
   `amount` decimal(18,2) NOT NULL,
   `qty` bigint(20) NOT NULL,
-  `purchase_id` bigint(20) NOT NULL
+  `purchase_id` bigint(20) NOT NULL,
+  `sales_rate` decimal(18,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -97,7 +113,10 @@ CREATE TABLE `sales` (
   `vat` decimal(10,2) NOT NULL,
   `total` bigint(20) NOT NULL,
   `netTotal` bigint(20) NOT NULL,
-  `discount` bigint(20) NOT NULL
+  `discount` bigint(20) NOT NULL,
+  `paidAmount` bigint(20) NOT NULL,
+  `returnAmount` bigint(20) NOT NULL,
+  `dueAmount` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -155,6 +174,13 @@ ALTER TABLE `customers`
   ADD UNIQUE KEY `FullName` (`FullName`);
 
 --
+-- Indexes for table `customer_transaction`
+--
+ALTER TABLE `customer_transaction`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `customer` (`customer_id`);
+
+--
 -- Indexes for table `items`
 --
 ALTER TABLE `items`
@@ -205,6 +231,12 @@ ALTER TABLE `unit`
 --
 ALTER TABLE `customers`
   MODIFY `CusId` int(10) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `customer_transaction`
+--
+ALTER TABLE `customer_transaction`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `items`
