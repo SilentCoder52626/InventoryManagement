@@ -29,7 +29,7 @@ namespace InventoryLibrary.Base
             return _context.Set<T>().Find(id);
         }
 
-        public async Task<IQueryable<T>> GetQueryable()
+        public IQueryable<T> GetQueryable()
         {
             return _context.Query<T>();
         }

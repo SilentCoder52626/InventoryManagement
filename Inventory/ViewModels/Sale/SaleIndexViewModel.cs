@@ -1,7 +1,7 @@
-﻿using System;
-using Inventory.ViewModels.SaleDetail;
+﻿using Inventory.ViewModels.SaleDetail;
 using InventoryLibrary.Entity;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -28,6 +28,12 @@ namespace Inventory.ViewModels.Sale
         public long discount { get; set; }
 
         public long netTotal { get; set; }
+        public long paidAmount { get; set; }
+
+        public long returnAmount { get; set; }
+        public long dueAmount { get; set; }
+
+
         public DateTime date { get; set; }
 
         public List<SaleDetailIndexViewModel> SalesDetails { get; set; }

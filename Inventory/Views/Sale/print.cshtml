@@ -1,0 +1,71 @@
+﻿@model Inventory.ViewModels.Sale.SalesPrintViewModel
+
+@{
+    Layout = null;
+}
+<html>
+<head>
+    <title>
+        Invoice
+    </title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <script src="~/lib/jquery/jquery-3.5.1.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
+
+</head>
+<body>
+    <div class="row">
+        <div class="col-md-4">
+            <h3 class="text-center">Sales Invoice</h3>
+            Bill No : @Model.SaleId<br />
+            Transaction Date : @Model.date.ToString("yyyy-MM-dd")<br />
+
+            Customer Name : @Model.CustomerName<br />
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Particular</th>
+                        <th>Qty</th>
+                        <th>Rate</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var data in @Model.SalesDetails){
+                    <tr>
+                        <td>@data.ItemName</td>
+                        <td>@data.Qty</td>
+                        <td>@data.Price</td>
+                        <td>@data.Total</td>
+
+                    </tr>
+
+                    }
+                    <tr>
+                    </tr>
+                </tbody>
+            </table>
+
+            <hr />
+            Total Amount : @Model.total<br />
+            Discount : @Model.discount
+            <hr />
+            Grand Total : @Model.netTotal
+            <hr />
+            Paid Amount : @Model.paidAmount<br />
+            Return Amount : @Model.returnAmount
+            <hr />
+            Due Amount : @Model.dueAmount
+        </div>
+        <div class="col-md-8"></div>
+    </div>
+
+    <script>
+        window.onload = function () { window.print(); }
+    </script>
+
+</body>
+</html>
+

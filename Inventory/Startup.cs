@@ -47,7 +47,7 @@ namespace Inventory
 
             services.AddScoped<ItemRepositoryInterface, ItemRepository>();
             services.AddScoped<ItemServiceInterface, ItemService>();
-            
+
             services.AddScoped<UnitRepositoryInterface, UnitRepository>();
             services.AddScoped<UnitServiceInterface, UnitService>();
 
@@ -63,6 +63,9 @@ namespace Inventory
             services.AddScoped<PurchaseServiceInterface, PurchaseService>();
 
             services.AddScoped<PurchaseDetailRepositoryInterface, PurchaseDetailRepository>();
+            services.AddScoped<CustomerTansactionRepositoryInterface, CustomerTransactionRepository>();
+            services.AddScoped<CustomerTransactionServiceInterface, CustomerTransactionService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

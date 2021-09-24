@@ -1,13 +1,10 @@
 ﻿using InventoryLibrary.Source.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace InventoryLibrary.Infrastructure.Mapping
 {
-    public class PurchaseDetailConfiguration: IEntityTypeConfiguration<PurchaseDetail>
+    public class PurchaseDetailConfiguration : IEntityTypeConfiguration<PurchaseDetail>
     {
         public void Configure(EntityTypeBuilder<PurchaseDetail> modelBuilder)
         {
@@ -20,7 +17,8 @@ namespace InventoryLibrary.Infrastructure.Mapping
             modelBuilder
                 .ToTable("purchase_details")
                 .HasOne(a => a.Purchase)
-                .WithMany(b => b.PurchaseDetails);
+                .WithMany(b => b.PurchaseDetails)
+                .HasForeignKey(a => a.PurchaseId);
 
             modelBuilder
                 .ToTable("purchase_details")
@@ -40,8 +38,14 @@ namespace InventoryLibrary.Infrastructure.Mapping
                 .HasColumnName("rate");
             modelBuilder
                 .ToTable("purchase_details")
-                .Property(p => p.Amount)
-                .HasColumnName("amount");
+                .Property(p => p.SalesRate)
+                .HasColumnName("sales_rate");
+
+            modelBuilder
+                .ToTable("purchase_details")
+                .HasOne(p => p.Items)
+                .WithMany()
+                .HasForeignKey(a => a.ItemId);
 
         }
     }

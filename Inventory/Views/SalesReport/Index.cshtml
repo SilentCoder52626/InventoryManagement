@@ -1,0 +1,69 @@
+﻿@model IList<Inventory.ViewModels.SalesReport.SalesReportViewModel>
+
+@{
+    Layout = "_Layout";
+}
+
+<div class="container-fluid mt-2">
+    <h1 class="text-center">Sales Report</h1>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table table-responsive mt-4">
+                <table id="mainTable" class="table mt-3 ">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Transaction Date</th>
+                            <th scope="col">Customer Name</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Discount</th>
+                            <th scope="col">Grand Amount</th>
+                            <th scope="col">Tendered Amount</th>
+                            <th scope="col">Return Amount</th>
+                            <th scope="col">Due Amount</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var i = 1;
+                            foreach (var data in Model)
+                            {
+                                <tr>
+                                    <td scope="row">@i</td>
+                                    <td>@data.TransactionDate.ToString("yyyy-MM-dd")</td>
+                                    <td>@data.CustomerName</td>
+                                    <td>@data.Amount</td>
+                                    <td>@data.Discount</td>
+                                    <td>@data.GrandAmount</td>
+                                    <td>@data.PaidAmount</td>
+                                    <td>@data.ReturnAmount</td>
+                                    <td>@data.DueAmount</td>
+
+                                </tr>
+                                i++;
+
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+
+            $("#mainTable").DataTable({
+                "pageLength": 10
+            });
+
+        });
+    </script>
+
+}        

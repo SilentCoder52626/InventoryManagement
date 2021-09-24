@@ -8,5 +8,7 @@
         public long Qty { get; set; }
         public long Amount { get; set; }
         public long Rate { get; set; }
+        public long SalesRate { get; set; }
+
     }
 }

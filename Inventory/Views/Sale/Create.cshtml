@@ -12,7 +12,6 @@
             <div class="form-group shadow rounded border-primary border-left  text-dark  p-4">
                 <label class="font-weight-bold" asp-for="CusId"></label>
                 <select asp-for="CusId" id="customer" asp-items="@Model.CustomerSelectList" class="form-control">
-                    <option value="0">-Select-</option>
                 </select>
                 <span asp-validation-for="CusId" class="text-danger"></span>
             </div>
@@ -27,7 +26,7 @@
                 <div class="form-group">
                     <label class="col-form-label">Available Qty</label>
                     <input id="available_qty" readonly class="form-control" />
-                </div> 
+                </div>
                 <div class="form-group">
                     <label class="col-form-label">Price:-</label>
                     <input id="price" readonly class="form-control" />
@@ -62,7 +61,6 @@
             <form method="POST" class="shadow rounded   text-dark ">
                 <ul class="list-group mt-3">
 
-                    <li class="list-group-item bg-info active">Sale Detail</li>
 
                     <li class="list-group-item text-right ">
                         Total&nbsp;
@@ -78,7 +76,18 @@
                         Net Total &nbsp;
                         <input id="net" readonly="readonly" />
                     </li>
-
+                    <li class="list-group-item text-right ">
+                        Paid Amont &nbsp;
+                        <input id="paidAmount" value="0" />
+                    </li>
+                    <li class="list-group-item text-right">
+                        Return Amount &nbsp;
+                        <input id="returnAmount" readonly="readonly" />
+                    </li>
+                    <li class="list-group-item text-right">
+                        Due Amount &nbsp;
+                        <input id="dueAmount" readonly="readonly" />
+                    </li>
                 </ul>
 
                 <button id="btnSave" type="submit" class="btn btn-block btn-success">Save Sale</button>
@@ -97,7 +106,7 @@
     <script>
         $(document).ready(function () {
             $('#qty').on('keyup',
-                function(e) {
+                function (e) {
                     e.preventDefault();
                     if ($("#qty").val() < 1) {
                         $("#qty").val(1);
@@ -141,8 +150,6 @@
 
                     row = $(this).closest('tr');
                     find_id = parseInt(row.find('td').eq(0).text());
-                    console.log("find id :- " + find_id);
-                    console.log(itemId);
 
                     if (itemId == find_id) {
                         alert("You have entered the same Item!");
@@ -167,6 +174,22 @@
                     }
                     calculateTotal();
                 });
+            $('#paidAmount').on('keyup',
+                function (e) {
+                    e.preventDefault();
+                    $("#returnAmount").val(0);
+                    $("#dueAmount").val(0);
+                    var total = $("#net").val();
+                    var paid = $("#paidAmount").val();
+                    if (parseFloat(paid) < 0) {
+                        $("#paidAmount").val(0);
+                    }
+                    if (parseFloat(paid) > parseFloat(total)) {
+                        $("#returnAmount").val(paid - total);
+                    } else {
+                        $("#dueAmount").val(total - paid);
+                    }
+                });
 
             $('#btn').click(function () {
                 event.preventDefault();
@@ -177,8 +200,6 @@
                 var availableQty = $('#available_qty').val();
                 var qty = $('#qty').val();
                 if (parseInt(qty) > parseInt(availableQty)) {
-                    console.log(qty);
-                    console.log(availableQty);
                     alert("Not enough available qty.");
                     return;
                 }
@@ -187,23 +208,23 @@
                 if (checkDuplicate(item_id)) {
                     $('table tbody').append(
                         `<tr>
-                            <td id="item-id" hidden> ${item_id} </td >
+                                                                                                                                                                <td id="item-id" hidden> ${item_id} </td >
 
-                        <td id="itemName"> ${item_name} </td >
-                        <td id="qty-list">
-                                <i id="minus" class="fa fa-minus-circle mr-2"></i> <span id="q"> ${qty} </span> <i id="plus" class="fa ml-2 fa-plus-circle"></i>
-                            </td>
-                        <td id="price" > ${price} </td >
-                        <td id="total"> ${total} </td>
-                        <td> <button id="removeButton" class="btn btn-danger"> Remove </button> </td>
-                        </tr >`
+                                                                                                                                                            <td id="itemName"> ${item_name} </td >
+                                                                                                                                                            <td id="qty-list">
+                                                                                                                                                                    <i id="minus" class="fa fa-minus-circle mr-2"></i> <span id="q"> ${qty} </span> <i id="plus" class="fa ml-2 fa-plus-circle"></i>
+                                                                                                                                                                </td>
+                                                                                                                                                            <td id="price" > ${price} </td >
+                                                                                                                                                            <td id="total"> ${total} </td>
+                                                                                                                                                            <td> <button id="removeButton" class="btn btn-danger"> Remove </button> </td>
+                                                                                                                                                            </tr >`
                     );
                 }
                 calculateTotal();
             });
             $('body').delegate("#minus",
                 "click",
-                function(e) {
+                function (e) {
 
                     e.preventDefault();
 
@@ -237,7 +258,7 @@
 
             $('body').delegate("#plus",
                 "click",
-                function(e) {
+                function (e) {
                     e.preventDefault();
 
                     row = $(this).closest("tr");
@@ -270,15 +291,25 @@
                 $("#totalAmt").val(total);
 
                 var discount = $("#discount").val();
+                var paid = $("#paidAmount").val();
+                $("#returnAmount").val(0);
+                $("#dueAmount").val(0);
                 var net = (parseFloat(total) - parseFloat(discount));
-
+                var returnAmount = 0;
+                var dueAmount = 0;
+                if (paid > net) {
+                    returnAmount = paid - net;
+                } else {
+                    dueAmount = net - paid;
+                }
                 $("#net").val(net);
+                $("#returnAmount").val(returnAmount);
+                $("#dueAmount").val(dueAmount);
             }
 
             $("body").delegate('#removeButton',
                 'click',
                 function () {
-                    console.log("remove button clicked");
                     event.preventDefault();
 
                     $(this).closest('tr').remove();
@@ -294,6 +325,8 @@
                         CusId: $('#customer :selected ').val(),
                         netTotal: $("#net").val(),
                         discount: $("#discount").val(),
+                        paidAmount: $("#paidAmount").val(),
+                        returnAmount: $("#returnAmount").val(),
                         SalesDetails: [],
                     }
 
@@ -316,8 +349,9 @@
                         type: 'POST',
                         dataType: 'json',
                         data: data,
-                        success: function (data, status) {
+                        success: function (response) {
                             alert("Saved Successfully!!!");
+                            window.open(`/Sale/Print?saleId=` + response, '_blank');
                             window.location.href = `/Sale/Index`;
                         }
                     });

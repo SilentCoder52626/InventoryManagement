@@ -1,14 +1,10 @@
-﻿using InventoryLibrary.Source.Entity;
+﻿using InventoryLibrary.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using InventoryLibrary.Entity;
 
 namespace InventoryLibrary.Infrastructure.Mapping
 {
-    public class SalesDetailConfiguration: IEntityTypeConfiguration<SaleDetails>
+    public class SalesDetailConfiguration : IEntityTypeConfiguration<SaleDetails>
     {
         public void Configure(EntityTypeBuilder<SaleDetails> modelBuilder)
         {
@@ -17,7 +13,7 @@ namespace InventoryLibrary.Infrastructure.Mapping
                 .ToTable("sale_details")
                 .HasKey(k => k.SaleDetailId)
                 .HasName("SaleDetailId");
-            
+
             modelBuilder
                 .ToTable("sale_details")
                 .Property(p => p.ItemName)
@@ -33,7 +29,7 @@ namespace InventoryLibrary.Infrastructure.Mapping
             modelBuilder
                 .ToTable("sale_details")
                 .Property(p => p.Qty)
-                .HasColumnName("qty");
+                .HasColumnName("Qty");
             modelBuilder
                 .ToTable("sale_details")
                 .Property(p => p.ItemId)

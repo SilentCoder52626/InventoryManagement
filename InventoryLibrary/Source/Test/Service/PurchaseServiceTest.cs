@@ -7,8 +7,6 @@ using InventoryLibrary.Source.Services.Implementation;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace InventoryLibrary.Source.Test.Service
@@ -23,14 +21,14 @@ namespace InventoryLibrary.Source.Test.Service
         private PurchaseCreateDTO _purchaseCreate;
         private PurchaseDetailCreateDTO _purchaseDetailCreate;
         private PurchaseService _purchaseService;
-       
+
 
         private Supplier _supplier;
 
-        private readonly decimal total       = 110;
+        private readonly decimal total = 110;
         private readonly decimal grand_total = 220;
-        private readonly decimal discount    = 10;
-        private readonly decimal vat         = 110 - 10 * (13 / 100);
+        private readonly decimal discount = 10;
+        private readonly decimal vat = 110 - 10 * (13 / 100);
 
         private readonly long qty = 1;
         private readonly decimal amt = 100;
@@ -42,9 +40,9 @@ namespace InventoryLibrary.Source.Test.Service
         private readonly string phone = "9898989898";
         public PurchaseServiceTest()
         {
-            _purchase        = new Purchase(_supplier, total, grand_total, discount);
-            _purchaseService = new PurchaseService( _purchaseRepo.Object,  _supplierRepo.Object, _itemRepo.Object);
-            _purchaseCreate  = new PurchaseCreateDTO();
+            _purchase = new Purchase(_supplier, discount);
+            _purchaseService = new PurchaseService(_purchaseRepo.Object, _supplierRepo.Object, _itemRepo.Object);
+            _purchaseCreate = new PurchaseCreateDTO();
             _purchaseDetailCreate = new PurchaseDetailCreateDTO();
             _supplier = new Supplier(name, address, email, phone);
         }
@@ -53,13 +51,11 @@ namespace InventoryLibrary.Source.Test.Service
         [Fact]
         public void Test_Purchase_Is_Created_With_Correct_Data()
         {
-
-
-            _purchaseCreate.Discount   = 20;
+            _purchaseCreate.Discount = 20;
             _purchaseCreate.GrandTotal = Convert.ToDecimal(90.4);
-            _purchaseCreate.Total      = 100;
-           
-           
+            _purchaseCreate.Total = 100;
+
+
             _supplierRepo.Setup(a => a.GetById(It.IsAny<long>())).ReturnsAsync(_supplier);
 
             var PurchaseDetail = new List<PurchaseDetailCreateDTO>();
@@ -72,7 +68,7 @@ namespace InventoryLibrary.Source.Test.Service
                     Qty = 10,
                     Amount = 100,
                     Rate = 10,
-                    
+
                 }
             };
             _purchaseCreate.PurchaseDetails = PurchaseDetail;

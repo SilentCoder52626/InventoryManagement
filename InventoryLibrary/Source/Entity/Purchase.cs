@@ -1,8 +1,6 @@
 ﻿using InventoryLibrary.Source.Entity;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InventoryLibrary.Entity
 {
@@ -13,11 +11,9 @@ namespace InventoryLibrary.Entity
 
         }
 
-        public Purchase(Supplier suppliers,  decimal total, decimal grand_total, decimal discount)
+        public Purchase(Supplier suppliers, decimal discount)
         {
             Suppliers = suppliers;
-            Total = total;
-            GrandTotal = grand_total;
             Discount = discount;
             PurchaseDateTime = DateTime.Now;
         }
@@ -35,10 +31,10 @@ namespace InventoryLibrary.Entity
         public long SupplierId { get; set; }
         public virtual Supplier Suppliers { get; set; }
 
-        public virtual void AddPurchaseDetails(Item item, long qty,decimal rate)
+        public virtual void AddPurchaseDetails(Item item, long qty, decimal rate, decimal salesRate)
         {
             var amount = qty * rate;
-            PurchaseDetails.Add(new PurchaseDetail(this,item,qty,rate));
+            PurchaseDetails.Add(new PurchaseDetail(this, item, qty, rate, salesRate));
             Calculate(amount);
         }
 

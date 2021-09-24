@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using InventoryLibrary.AppDbContext;
+﻿using InventoryLibrary.AppDbContext;
 using InventoryLibrary.Base;
 using InventoryLibrary.Source.Entity;
 using InventoryLibrary.Source.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace InventoryLibrary.Source.Repository
 {
@@ -19,7 +16,7 @@ namespace InventoryLibrary.Source.Repository
 
         public async Task<Unit> GetByName(string name)
         {
-            return await (await this.GetQueryable().ConfigureAwait(false)).Where(a => a.Name == name).SingleOrDefaultAsync();
+            return await this.GetQueryable().Where(a => a.Name == name).SingleOrDefaultAsync().ConfigureAwait(false);
         }
     }
 }

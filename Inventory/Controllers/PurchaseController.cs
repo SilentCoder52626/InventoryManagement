@@ -5,6 +5,7 @@ using InventoryLibrary.Repository.Interface;
 using InventoryLibrary.Services.ServiceInterface;
 using InventoryLibrary.Source.Repository.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 using System;
 using System.Collections.Generic;
@@ -38,7 +39,7 @@ namespace Inventory.Controllers
         public async Task<IActionResult> Index()
         {
 
-            var purchases = (await _purchaseRepo.GetQueryable().ConfigureAwait(true)).ToList();
+            var purchases = (await _purchaseRepo.GetQueryable().ToListAsync());
 
             var indexViewModel = new List<PurchaseIndexViewModel>();
 
@@ -64,7 +65,7 @@ namespace Inventory.Controllers
         {
             try
             {
-                var purchaseDetail = (await _purchaseDetailRepo.GetQueryable().ConfigureAwait(true)).Where(a => a.PurchaseId == id).ToList();
+                var purchaseDetail = (await _purchaseDetailRepo.GetQueryable().Where(a => a.PurchaseId == id).ToListAsync());
                 var data = purchaseDetail.Select(a => new
                 {
                     a.Id,
@@ -116,7 +117,11 @@ namespace Inventory.Controllers
                     {
                         var dto = new PurchaseDetailCreateDTO
                         {
-                            ItemId = data.ItemId, Rate = data.Rate, Qty = data.Qty, Amount = data.Amount
+                            ItemId = data.ItemId,
+                            Rate = data.Rate,
+                            Qty = data.Qty,
+                            Amount = data.Amount,
+                            SalesRate = data.SalesRate,
                         };
 
 

@@ -1,14 +1,10 @@
-﻿using InventoryLibrary.Entity;
+﻿using InventoryLibrary.Source.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using InventoryLibrary.Source.Entity;
 
 namespace InventoryLibrary.Infrastructure.Mapping
 {
-    public class SalesConfiguration:IEntityTypeConfiguration<Sale>
+    public class SalesConfiguration : IEntityTypeConfiguration<Sale>
     {
         public void Configure(EntityTypeBuilder<Sale> modelBuilder)
         {
@@ -27,17 +23,28 @@ namespace InventoryLibrary.Infrastructure.Mapping
                 .ToTable("sales")
                 .Property(c => c.total)
                 .HasColumnName("total");
-            
+
             modelBuilder
                 .ToTable("sales")
                 .Property(c => c.discount)
                 .HasColumnName("discount");
-            
+
             modelBuilder
                 .ToTable("sales")
                 .Property(c => c.netTotal)
                 .HasColumnName("netTotal");
-            
+            modelBuilder
+                .ToTable("sales")
+                .Property(c => c.paidAmount)
+                .HasColumnName("paidAmount");
+            modelBuilder
+                .ToTable("sales")
+                .Property(c => c.returnAmount)
+                .HasColumnName("returnAmount");
+            modelBuilder
+                .ToTable("sales")
+                .Property(c => c.dueAmount)
+                .HasColumnName("dueAmount");
             modelBuilder
                 .ToTable("sales")
                 .Property(c => c.SalesDate)
@@ -45,7 +52,13 @@ namespace InventoryLibrary.Infrastructure.Mapping
             modelBuilder
                 .ToTable("sales")
                 .HasMany(a => a.SalesDetails)
-                .WithOne(b => b.Sales);
+                .WithOne()
+                .HasForeignKey(a => a.SaleId);
+            modelBuilder
+                .ToTable("sales")
+                .HasOne(a => a.customer)
+                .WithMany()
+                .HasForeignKey(x => x.CusId);
 
         }
     }

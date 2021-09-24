@@ -1,16 +1,17 @@
 ﻿using Inventory.ViewModels.Sale;
+using Inventory.ViewModels.SaleDetail;
 using InventoryLibrary.Dto.Sale;
 using InventoryLibrary.Repository.Interface;
 using InventoryLibrary.Services.ServiceInterface;
 using InventoryLibrary.Source.Dto.SaleDetail;
 using InventoryLibrary.Source.Repository.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace Inventory.Controllers
 {
@@ -41,7 +42,7 @@ namespace Inventory.Controllers
         {
             try
             {
-                var sales = (await _saleRepo.GetQueryable().ConfigureAwait(true)).ToList();
+                var sales = await _saleRepo.GetQueryable().ToListAsync().ConfigureAwait(true);
                 var indexViewModel = new List<SaleIndexViewModel>();
 
                 foreach (var data in sales)
@@ -100,7 +101,7 @@ namespace Inventory.Controllers
         {
             try
             {
-                var sale = (await _saleDetailRepo.GetQueryable()).Where(a => a.SaleId == id).ToList();
+                var sale = _saleDetailRepo.GetQueryable().Where(a => a.SaleId == id).ToList();
                 var data = sale.Select(a => new
                 {
                     a.SaleDetailId,
@@ -124,7 +125,7 @@ namespace Inventory.Controllers
             var sale = new SaleIndexViewModel
             {
                 customers = await _customerRepo.GetAllAsync().ConfigureAwait(true),
-                items = (await _itemRepo.GetAllAsync().ConfigureAwait(true)).Where(a=>a.IsActive()).ToList()
+                items = (await _itemRepo.GetAllAsync().ConfigureAwait(true)).Where(a => a.IsActive()).ToList()
             };
 
 
@@ -145,6 +146,8 @@ namespace Inventory.Controllers
                         discount = allSales.discount,
                         total = allSales.netTotal,
                         netTotal = allSales.netTotal,
+                        paidAmount = allSales.paidAmount,
+                        returnAmount = allSales.returnAmount
                     };
 
                     var saleDetails = new List<InventoryLibrary.Source.Dto.SaleDetail.SaleDetailCreateDTO>();
@@ -152,7 +155,11 @@ namespace Inventory.Controllers
                     {
                         var dto = new SaleDetailCreateDTO
                         {
-                            ItemName = data.ItemName ,Qty = data.Qty, Total = data.Total, Price = data.Price, ItemId = data.ItemId
+                            ItemName = data.ItemName,
+                            Qty = data.Qty,
+                            Total = data.Total,
+                            Price = data.Price,
+                            ItemId = data.ItemId
                         };
 
 
@@ -160,10 +167,10 @@ namespace Inventory.Controllers
                     }
 
                     sale.SaleDetails = saleDetails;
-                    await _saleService.Create(sale).ConfigureAwait(true);
+                    var Sales = await _saleService.Create(sale).ConfigureAwait(true);
 
                     _toastNotification.AddSuccessToastMessage("Successfully Created Sale!");
-                    return Json(sale);
+                    return Json(Sales.SaleId);
 
                 }
             }
@@ -179,6 +186,36 @@ namespace Inventory.Controllers
                 items = (await _itemRepo.GetAllAsync().ConfigureAwait(true)).Where(a => a.IsActive()).ToList()
             };
             return View(saleView);
+        }
+        public async Task<IActionResult> Print(long saleId)
+        {
+            var Sales = await _saleRepo.GetById(saleId);
+            var model = new SalesPrintViewModel()
+            {
+
+                CusId = Sales.CusId,
+                SaleId = Sales.SaleId,
+                CustomerName = Sales.customer.FullName,
+                netTotal = Sales.netTotal,
+                discount = Sales.discount,
+                paidAmount = Sales.paidAmount,
+                dueAmount = Sales.dueAmount,
+                returnAmount = Sales.returnAmount,
+                date = Sales.SalesDate,
+                total = Sales.total,
+                SalesDetails = Sales.SalesDetails.Select(a =>
+
+                    new SaleDetailIndexViewModel()
+                    {
+                        ItemId = a.ItemId,
+                        ItemName = a.ItemName,
+                        Price = a.Price,
+                        Qty = a.Qty,
+                        Total = a.Total
+                    }
+                ).ToList()
+            };
+            return View(model);
         }
     }
 

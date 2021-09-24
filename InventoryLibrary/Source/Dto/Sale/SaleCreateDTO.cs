@@ -18,7 +18,8 @@ namespace InventoryLibrary.Dto.Sale
         public long discount { get; set; }
         public long netTotal { get; set; }
 
-
+        public long paidAmount { get; set; }
+        public long returnAmount { get; set; }
         public List<SaleDetailCreateDTO> SaleDetails { get; set; }
 
 

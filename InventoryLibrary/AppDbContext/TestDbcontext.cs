@@ -8,7 +8,7 @@ namespace InventoryLibrary.AppDbContext
 {
     public class Testdbcontext : DbContext
     {
-        private readonly IConfiguration _configuration; 
+        private readonly IConfiguration _configuration;
         public Testdbcontext(DbContextOptions<Testdbcontext> options, IConfiguration configuration) : base(options)
         {
             _configuration = configuration;
@@ -21,6 +21,8 @@ namespace InventoryLibrary.AppDbContext
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<Purchase> Purchases { get; set; }
         public DbSet<PurchaseDetail> purchase_details { get; set; }
+        public DbSet<CustomerTransaction> Customer_Transaction { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,6 +35,10 @@ namespace InventoryLibrary.AppDbContext
             modelBuilder.ApplyConfiguration(new PurchaseDetailConfiguration());
             modelBuilder.ApplyConfiguration(new SalesConfiguration());
             modelBuilder.ApplyConfiguration(new SalesDetailConfiguration());
+            modelBuilder.ApplyConfiguration(new CustomerTransactionConfiguration());
+            modelBuilder.ApplyConfiguration(new CustomerConfiguration());
+
+
 
         }
     }

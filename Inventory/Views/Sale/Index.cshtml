@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal fade" id="myModal" role="dialog" style="margin-top:13%;">
             <div class="modal-dialog  bg-light ">
                 <div class="modal-header ">
                     <b>Sales Details</b>
@@ -78,7 +78,7 @@
 @section scripts{
     <script>
         $(document).ready(function () {
-            
+
 
             $("#mainTable").DataTable({
                 "pageLength": 10
@@ -89,32 +89,32 @@
                 event.preventDefault();
 
                 var id = $(this).closest('tr').find('td').eq(0).text();
-                var url = 'Sale/GetDetails?id='+id+"";
-                
+                var url = '/Sale/GetDetails?id=' + id + "";
+
 
                 $.ajax({
                     url: url,
                     type: 'GET',
                     dataType: 'json',
                     success: function (data) {
-                        
+
                         $('display').css({ 'display': "block" });
                         $('.modal-table tbody tr').remove();
                         console.log(data);
                         for (var i = 0; i < data.length; i++) {
                             $('.modal-table tbody').append(
                                 `
-                                <tr>
-                                    <td>${data[i].saleDetailId}</td>
-                                    <td>${data[i].itemName}</td>
-                                    <td>${data[i].qty}</td>
-                                    <td>${data[i].price}</td>
-                                    <td>${data[i].total}</td>
-                                </tr>
-                                `
+                                        <tr>
+                                            <td>${data[i].saleDetailId}</td>
+                                            <td>${data[i].itemName}</td>
+                                            <td>${data[i].qty}</td>
+                                            <td>${data[i].price}</td>
+                                            <td>${data[i].total}</td>
+                                        </tr>
+                                        `
                             );
                         }
-                        $('#myModel').modal('show'); 
+                        $('#myModel').modal('show');
                     }
 
                 });

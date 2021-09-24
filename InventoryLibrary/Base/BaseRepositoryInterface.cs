@@ -10,7 +10,7 @@ namespace InventoryLibrary.Base
         Task InsertAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(T entity);
-        Task<IQueryable<T>> GetQueryable();
+        IQueryable<T> GetQueryable();
         Task<T> GetById(long id);
     }
 }

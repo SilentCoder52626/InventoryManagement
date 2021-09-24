@@ -1,9 +1,7 @@
 ﻿using InventoryLibrary.Entity;
 using InventoryLibrary.Source.Entity;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace InventoryLibrary.Source.Test.Entity
@@ -19,10 +17,10 @@ namespace InventoryLibrary.Source.Test.Entity
 
 
         private readonly Supplier _supplier;
-        private const string name    = "prismkoirala";
+        private const string name = "prismkoirala";
         private const string address = "birtamode";
-        private const string email   = "prismkoirala@gmail.com";
-        private const string phone   = "9818195512";
+        private const string email = "prismkoirala@gmail.com";
+        private const string phone = "9818195512";
 
 
         private readonly Unit unit;
@@ -35,9 +33,9 @@ namespace InventoryLibrary.Source.Test.Entity
         public PurchaseTest()
         {
             unit = new Unit("as");
-            _item     = new Item(unit,item_name,10);
+            _item = new Item(unit, item_name, 10);
             _supplier = new Supplier(name, address, email, phone);
-            _purchase = new Purchase(_supplier ,total, grand_total, discount);
+            _purchase = new Purchase(_supplier, discount);
 
         }
 
@@ -67,13 +65,13 @@ namespace InventoryLibrary.Source.Test.Entity
         {
             var PurchaseDetails = new List<PurchaseDetail>();
 
-            PurchaseDetails.Add(new PurchaseDetail(_purchase, _item, qty, rate));
+            PurchaseDetails.Add(new PurchaseDetail(_purchase, _item, qty, rate, 10));
 
             _purchase.PurchaseDetails = new List<PurchaseDetail>() {
-                new PurchaseDetail(_purchase, _item, qty, rate)
+                new PurchaseDetail(_purchase, _item, qty, rate,10)
             };
 
-            _purchase.AddPurchaseDetails(_item, qty, rate);
+            _purchase.AddPurchaseDetails(_item, qty, rate, 10);
 
             Assert.Equal(PurchaseDetails.First().Amount, _purchase.PurchaseDetails.First().Amount);
             Assert.Equal(PurchaseDetails.First().Qty, _purchase.PurchaseDetails.First().Qty);

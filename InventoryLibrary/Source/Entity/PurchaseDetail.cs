@@ -1,6 +1,4 @@
 ﻿using InventoryLibrary.Entity;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InventoryLibrary.Source.Entity
 {
@@ -11,13 +9,14 @@ namespace InventoryLibrary.Source.Entity
         {
 
         }
-        public PurchaseDetail(Purchase purchase, Item item, long qty, decimal rate)
+        public PurchaseDetail(Purchase purchase, Item item, long qty, decimal rate, decimal salesRate)
         {
             Purchase = purchase;
             Items = item;
             Qty = qty;
             Amount = qty * rate;
             Rate = rate;
+            SalesRate = salesRate;
         }
 
         public long Id { get; protected set; }
@@ -27,10 +26,12 @@ namespace InventoryLibrary.Source.Entity
         public decimal Amount { get; set; }
 
         public decimal Rate { get; set; }
+        public decimal SalesRate { get; set; }
+
 
         public long PurchaseId { get; set; }
         public virtual Purchase Purchase { get; set; }
-        
+
         public long ItemId { get; set; }
         public virtual Item Items { get; set; }
     }

@@ -4,7 +4,10 @@ namespace InventoryLibrary.Entity
 {
     public class Customer
     {
+        protected Customer()
+        {
 
+        }
         public Customer(string fullName)
         {
             FullName = fullName;

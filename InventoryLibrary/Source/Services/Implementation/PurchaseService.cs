@@ -1,9 +1,7 @@
 ﻿using InventoryLibrary.Dto.Purchase;
 using InventoryLibrary.Entity;
-using InventoryLibrary.Exceptions;
 using InventoryLibrary.Repository.Interface;
 using InventoryLibrary.Services.ServiceInterface;
-using InventoryLibrary.Source.Entity;
 using InventoryLibrary.Source.Extension;
 using InventoryLibrary.Source.Repository.Interface;
 using System;
@@ -17,8 +15,8 @@ namespace InventoryLibrary.Source.Services.Implementation
         private readonly SupplierRepositoryInterface _supplierRepo;
         private readonly ItemRepositoryInterface _itemRepo;
 
-        public PurchaseService( 
-            PurchaseRepositoryInterface _purchaseRepo, 
+        public PurchaseService(
+            PurchaseRepositoryInterface _purchaseRepo,
             SupplierRepositoryInterface _supplierRepo,
             ItemRepositoryInterface _itemRepo
             )
@@ -34,15 +32,15 @@ namespace InventoryLibrary.Source.Services.Implementation
             var supplier = await _supplierRepo.GetById(dto.SupplierId).ConfigureAwait(false) ?? throw new Exception("Supplier not found!!!");
 
 
-            var purchase = new Purchase(supplier, dto.Total, dto.GrandTotal, dto.Discount);
+            var purchase = new Purchase(supplier, dto.Discount);
 
             foreach (var data in dto.PurchaseDetails)
             {
                 var item = await _itemRepo.GetById(data.ItemId).ConfigureAwait(false) ?? throw new Exception("Item not found!");
 
-                purchase.AddPurchaseDetails(item, data.Qty, data.Rate);
+                purchase.AddPurchaseDetails(item, data.Qty, data.Rate, data.SalesRate);
                 item.AddQty(data.Qty);
-                item.UpdateRate(data.Rate);
+                item.UpdateRate(data.SalesRate);
                 await _itemRepo.UpdateAsync(item).ConfigureAwait(false);
             }
 

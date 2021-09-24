@@ -4,10 +4,10 @@ using InventoryLibrary.Services.ServiceInterface;
 using InventoryLibrary.Source.Dto.Supplier;
 using InventoryLibrary.Source.Repository.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Inventory.Controllers
@@ -99,7 +99,7 @@ namespace Inventory.Controllers
         {
             try
             {
-                var Suppliers = (await _supplierRepo.GetQueryable().ConfigureAwait(true)).ToList();
+                var Suppliers = (await _supplierRepo.GetQueryable().ToListAsync());
 
                 var indexViewModel = new List<SupplierIndexViewModel>();
 
@@ -130,7 +130,7 @@ namespace Inventory.Controllers
             return View();
         }
 
-       
+
 
         public async Task<IActionResult> Update(long id)
         {
@@ -186,6 +186,6 @@ namespace Inventory.Controllers
             }
             return View();
         }
-        
+
     }
 }

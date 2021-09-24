@@ -1,16 +1,16 @@
 ﻿using InventoryLibrary.Dto.Sale;
 using InventoryLibrary.Entity;
+using InventoryLibrary.Repository.Interface;
 using InventoryLibrary.Services.Implementation;
 using InventoryLibrary.Source.Dto.SaleDetail;
+using InventoryLibrary.Source.Entity;
 using InventoryLibrary.Source.Repository.Interface;
+using InventoryLibrary.Source.Services.ServiceInterface;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using InventoryLibrary.Repository.Interface;
-using InventoryLibrary.Source.Entity;
 using Xunit;
 
 namespace InventoryLibrary.Source.Test.Service
@@ -20,6 +20,8 @@ namespace InventoryLibrary.Source.Test.Service
         private readonly Mock<SaleRepositoryInterface> _saleRepo = new Mock<SaleRepositoryInterface>();
         private readonly Mock<ItemRepositoryInterface> _itemRepo = new Mock<ItemRepositoryInterface>();
         private readonly Mock<SaleDetailRepositoryInterface> _saleDetailRepo = new Mock<SaleDetailRepositoryInterface>();
+        private readonly Mock<CustomerTransactionServiceInterface> _trasactionService = new Mock<CustomerTransactionServiceInterface>();
+        private readonly Mock<CustomerRepositoryInterface> _customerRepo = new Mock<CustomerRepositoryInterface>();
 
         private SaleService _saleService;
 
@@ -29,23 +31,19 @@ namespace InventoryLibrary.Source.Test.Service
         private Sale _sale;
         private SaleDetails _saleDetail;
 
-        private decimal vat = 100;
         private long total = 1000;
         private long cus_id = 12;
-        private long item_id = 2;
         private long net_total = 1000;
         private long discount = 50;
         private DateTime timestamp = DateTime.Now.Date;
 
         private int qty = 1;
         private long price = 50;
-        private string customer_name = "Prism Koirala";
         private string item_name = "Choco Fun";
-        private long sale_id = 1;
 
         public SaleServiceTest()
         {
-            _saleService = new SaleService(_saleRepo.Object, _saleDetailRepo.Object, _itemRepo.Object);
+            _saleService = new SaleService(_saleRepo.Object, _saleDetailRepo.Object, _itemRepo.Object, _trasactionService.Object, _customerRepo.Object);
             _saleCreateDto = new SaleCreateDTO();
             _saleDetailCreateDto = new SaleDetailCreateDTO();
             _sale = new Sale();

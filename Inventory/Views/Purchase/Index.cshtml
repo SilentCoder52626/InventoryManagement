@@ -11,37 +11,37 @@
     <div class="table bg-light">
         <table class="table" id="mainTable">
             <thead class="table-bordered table-dark">
-            <tr>
-                <th>#</th>
-                <th>Date/Time</th>
-                <th>Supplier Name</th>
-                <th>Total</th>
-                <th>Discount</th>
-                <th>Grand Total</th>
-                <th>Action</th>
-            </tr>
+                <tr>
+                    <th>#</th>
+                    <th>Date/Time</th>
+                    <th>Supplier Name</th>
+                    <th>Total</th>
+                    <th>Discount</th>
+                    <th>Grand Total</th>
+                    <th>Action</th>
+                </tr>
             </thead>
             <tbody class="table-borderless">
-            @{
-                foreach (var data in Model)
-                {
-                    <tr>
-                        <td>@data.Id</td>
-                        <td>@data.Date</td>
-                        <td>@data.SupplierName</td>
-                        <td>@data.Total</td>
-                        <td>@data.Discount</td>
-                        <td>@data.GrandTotal</td>
-                        <td>
-                            <a class="btn btn-primary btn-details" data-toggle="modal" href="#" data-target="#myModal">Details</a>
-                        </td>
-                    </tr>
+                @{
+                    foreach (var data in Model)
+                    {
+                        <tr>
+                            <td>@data.Id</td>
+                            <td>@data.Date</td>
+                            <td>@data.SupplierName</td>
+                            <td>@data.Total</td>
+                            <td>@data.Discount</td>
+                            <td>@data.GrandTotal</td>
+                            <td>
+                                <a class="btn btn-primary btn-details" data-toggle="modal" href="#" data-target="#myModal">Details</a>
+                            </td>
+                        </tr>
+                    }
                 }
-            }
 
             </tbody>
         </table>
-        <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal fade" id="myModal" role="dialog" style="margin-top:13%;">
             <div class="modal-dialog  bg-light ">
                 <div class="modal-header bg-warning">
                     <b>Purchase Details</b>
@@ -50,16 +50,16 @@
                 <div class="modal-body bg-light">
                     <table class="table modal-table">
                         <thead class="thead-dark">
-                        <tr>
-                            <th> # </th>
-                            <th> Item Name </th>
-                            <th> Qty </th>
-                            <th> Price </th>
-                            <th> Total</th>
-                        </tr>
+                            <tr>
+                                <th> # </th>
+                                <th> Item Name </th>
+                                <th> Qty </th>
+                                <th> Price </th>
+                                <th> Total</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr> </tr>
+                            <tr> </tr>
                         </tbody>
                     </table>
 
@@ -83,8 +83,7 @@
             $('.btn-details').on('click', function (e) {
                 e.preventDefault();
                 var id = $(this).closest('tr').find('td').eq(0).text();
-
-                var url = `purchase/GetDetails/${id}`;
+                var url = '/Purchase/GetDetails?id=' + id + "";
 
                 $.ajax({
                     url: url,
@@ -97,21 +96,21 @@
                         for (var i = 0; i <= data.length; i++) {
                             $('.modal-table tbody').append(
                                 `
-                                <tr>
-                                    <td>${data[i].id}</td>
-                                    <td>${data[i].name}</td>
-                                    <td>${data[i].qty}</td>
-                                    <td>${data[i].rate}</td>
-                                    <td>${data[i].amount}</td>
-                                </tr>
-                               `
+                                                                        <tr>
+                                                                            <td>${data[i].id}</td>
+                                                                            <td>${data[i].name}</td>
+                                                                            <td>${data[i].qty}</td>
+                                                                            <td>${data[i].rate}</td>
+                                                                            <td>${data[i].amount}</td>
+                                                                        </tr>
+                                                                       `
                             )
                         }
-                     }
+                    }
                 });
             })
         });
 
     </script>
-   
+
 }

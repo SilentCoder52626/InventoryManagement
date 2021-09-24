@@ -1,15 +1,14 @@
 ﻿using Inventory.ViewModels;
-using InventoryLibrary.AppDbContext;
 using InventoryLibrary.Exceptions;
 using InventoryLibrary.Repository.Interface;
 using InventoryLibrary.Services.ServiceInterface;
 using InventoryLibrary.Source.DTO.Customer;
 using InventoryLibrary.Source.Services.ServiceInterface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Inventory.Controllers
@@ -34,7 +33,7 @@ namespace Inventory.Controllers
         {
             try
             {
-                var Customer = (await _customerRepo.GetQueryable().ConfigureAwait(true)).ToList();
+                var Customer = await _customerRepo.GetQueryable().ToListAsync();
                 var indexViewModel = new List<CustomerIndexViewModel>();
 
                 foreach (var data in Customer)
