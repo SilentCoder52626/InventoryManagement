@@ -19,7 +19,7 @@ namespace InventoryLibrary.Source.Test.Service
         private string item_name = "Choco Fun";
 
         private ItemService _itemService;
-        private UnitCreateDTO _createDto;
+        private ItemCreateDTO _createDto;
         private ItemUpdateDTO _updateDto;
         private Item _item;
         private readonly Unit unit;
@@ -30,7 +30,7 @@ namespace InventoryLibrary.Source.Test.Service
             unit = new Unit("as");
 
             _itemService = new ItemService(_itemRepo.Object);
-            _createDto = new UnitCreateDTO();
+            _createDto = new ItemCreateDTO();
             _updateDto = new ItemUpdateDTO();
             _item = new Item(unit ,item_name, 10);
             

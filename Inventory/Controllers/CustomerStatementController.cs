@@ -23,9 +23,11 @@ namespace Inventory.Controllers
         public async Task<IActionResult> Index(long customerId = 0)
         {
 
-            CustomerTransactionViewModel vm = new CustomerTransactionViewModel();
-            vm.CustomerId = customerId;
-            vm.customers = await _customerRepo.GetAllAsync();
+            CustomerTransactionViewModel vm = new CustomerTransactionViewModel
+            {
+                CustomerId = customerId,
+                customers = await _customerRepo.GetAllAsync()
+            };
             if (customerId > 0)
             {
                 var Customer = await _customerRepo.GetById(customerId).ConfigureAwait(false);

@@ -5,6 +5,7 @@ using InventoryLibrary.Repository.Interface;
 using InventoryLibrary.Source.DTO.Customer;
 using InventoryLibrary.Source.Extension;
 using InventoryLibrary.Source.Services.ServiceInterface;
+using System;
 using System.Threading.Tasks;
 using System.Transactions;
 
@@ -21,7 +22,7 @@ namespace InventoryLibrary.Source.Services
         public async Task Create(CustomerCreateDTO dto)
         {
                 using var tx = TransactionScopeHelper.GetInstance();
-
+            await ValidateCustomerNumber(dto.PhoneNumber);
                 var customer = new Customer(dto.FullName);
                 customer.Email = dto.Email;
                 customer.Address = dto.Address;
@@ -36,22 +37,20 @@ namespace InventoryLibrary.Source.Services
 
         }
 
-        public async Task Delete(long id)
+        private async Task ValidateCustomerNumber(string phoneNumber, Customer? customer = null)
         {
-            using var tx = TransactionScopeHelper.GetInstance();
-
-            var customer = await _customerRepo.GetById(id).ConfigureAwait(true) ?? throw new CustomerNotFoundException();
-
-            await _customerRepo.DeleteAsync(customer).ConfigureAwait(false);
-
-            tx.Complete();
+            var CustomerByNumber = await _customerRepo.GetByNumber(phoneNumber).ConfigureAwait(false);
+            if (CustomerByNumber != null && CustomerByNumber != customer)
+                throw new Exception("Customer Number already registered.");
+            return;
         }
 
         public async Task Update(CustomerUpdateDTO dto)
         {
             using var tx = TransactionScopeHelper.GetInstance();
 
-            var customer = await _customerRepo.GetById(dto.CusId).ConfigureAwait(true);
+            var customer = await _customerRepo.GetById(dto.CusId).ConfigureAwait(false);
+            await ValidateCustomerNumber(dto.PhoneNumber, customer).ConfigureAwait(false);
             customer.Update(dto.FullName);
             customer.Email = dto.Email;
             customer.PhoneNumber = dto.PhoneNumber;

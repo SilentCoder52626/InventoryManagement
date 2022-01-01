@@ -58,7 +58,7 @@ namespace Inventory.Controllers
                 if (ModelState.IsValid)
                 {
                     var Unit = await _unitRepo.GetById(model.UnitId).ConfigureAwait(true);
-                    var item = new UnitCreateDTO { ItemName = model.ItemName, Price = model.Price, Unit = Unit };
+                    var item = new ItemCreateDTO { ItemName = model.ItemName, Price = model.Price, Unit = Unit };
 
 
                     await _itemService.Create(item).ConfigureAwait(true);

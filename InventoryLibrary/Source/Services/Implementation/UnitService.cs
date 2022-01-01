@@ -8,7 +8,7 @@ using InventoryLibrary.Source.Entity;
 using InventoryLibrary.Source.Extension;
 using InventoryLibrary.Source.Repository.Interface;
 using InventoryLibrary.Source.Services.ServiceInterface;
-using UnitCreateDTO = InventoryLibrary.Source.DTO.Item.UnitCreateDTO;
+using ItemCreateDTO = InventoryLibrary.Source.DTO.Item.ItemCreateDTO;
 
 namespace InventoryLibrary.Source.Services.Implementation
 {
@@ -24,9 +24,9 @@ namespace InventoryLibrary.Source.Services.Implementation
         public async Task Create(UnitCreateDTO dto)
         {
             using var tx = TransactionScopeHelper.GetInstance();
-            await ValidateUnit(dto.ItemName);
-            var Unit = new Unit(dto.ItemName);
-            await _unitRepo.InsertAsync(Unit);
+            await ValidateUnit(dto.Name);
+            var Unit = new Unit(dto.Name);
+            await _unitRepo.InsertAsync(Unit).ConfigureAwait(false);
 
             tx.Complete();
         }

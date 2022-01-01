@@ -7,7 +7,6 @@ namespace InventoryLibrary.Source.Services.ServiceInterface
     {
         Task Create(CustomerCreateDTO dto);
         Task Update(CustomerUpdateDTO dto);
-        Task Delete(long id);
 
     }
 }

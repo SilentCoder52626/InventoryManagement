@@ -2,7 +2,7 @@
 
 namespace InventoryLibrary.Source.DTO.Item
 {
-    public class UnitCreateDTO
+    public class ItemCreateDTO
     {
 
         public long ItemId { get; set; }

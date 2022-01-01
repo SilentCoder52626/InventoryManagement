@@ -5,7 +5,7 @@ namespace InventoryLibrary.Source.Services.ServiceInterface
 {
     public interface ItemServiceInterface
     {
-        Task Create(UnitCreateDTO dto);
+        Task Create(ItemCreateDTO dto);
 
         Task Update(ItemUpdateDTO dto);
 

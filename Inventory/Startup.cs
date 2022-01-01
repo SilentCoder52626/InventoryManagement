@@ -85,7 +85,7 @@ namespace Inventory
             app.UseStaticFiles();
 
             app.UseNToastNotify();
-
+            app.UseCookiePolicy();
             app.UseRouting();
 
             app.UseAuthorization();

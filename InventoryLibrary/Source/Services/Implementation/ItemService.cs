@@ -33,7 +33,7 @@ namespace InventoryLibrary.Source.Services
 
         }
 
-        public async Task Create(UnitCreateDTO dto)
+        public async Task Create(ItemCreateDTO dto)
         {
             using var tx = TransactionScopeHelper.GetInstance();
             

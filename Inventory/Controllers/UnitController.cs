@@ -9,20 +9,17 @@ using InventoryLibrary.Source.Dto.Unit;
 using InventoryLibrary.Source.Repository.Interface;
 using InventoryLibrary.Source.Services.ServiceInterface;
 using NToastNotify;
-using UnitCreateDTO = InventoryLibrary.Source.DTO.Item.UnitCreateDTO;
 
 namespace Inventory.Controllers
 {
     public class UnitController : Controller
     {
-        private readonly Testdbcontext _context;
         private readonly IToastNotification _toastNotification;
         private readonly UnitServiceInterface _unitService;
         private readonly UnitRepositoryInterface _unitRepo;
 
-        public UnitController(Testdbcontext context, IToastNotification toastNotification, UnitServiceInterface _UnitService, UnitRepositoryInterface unitRepo)
+        public UnitController( IToastNotification toastNotification, UnitServiceInterface _UnitService, UnitRepositoryInterface unitRepo)
         {
-            _context = context;
             _toastNotification = toastNotification;
             this._unitService = _UnitService;
             _unitRepo = unitRepo;
@@ -51,11 +48,11 @@ namespace Inventory.Controllers
                 if (ModelState.IsValid)
                 {
 
-                    var Unit = new UnitCreateDTO {ItemName = model.UnitName};
+                    var Unit = new UnitCreateDTO {Name = model.UnitName};
 
 
                     await _unitService.Create(Unit).ConfigureAwait(true);
-                    _toastNotification.AddSuccessToastMessage("Successfully Created Unit :- " + Unit.ItemName);
+                    _toastNotification.AddSuccessToastMessage("Successfully Created Unit :- " + Unit.Name);
 
                     return RedirectToAction("Index");
                 }
