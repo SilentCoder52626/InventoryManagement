@@ -1,4 +1,5 @@
-﻿using InventoryLibrary.Entity;
+﻿using InventoryLibrary.AppDbContext;
+using InventoryLibrary.Entity;
 using InventoryLibrary.Repository.Interface;
 using InventoryLibrary.Source.DTO.Customer;
 using InventoryLibrary.Source.Services;
@@ -14,6 +15,8 @@ namespace InventoryLibrary.Source.Test.Service
     public class CustomerServiceTest
     {
         private readonly Mock<CustomerRepositoryInterface> _customerRepo = new Mock<CustomerRepositoryInterface>();
+        private readonly Mock<Testdbcontext> _context = new Mock<Testdbcontext>();
+
         private CustomerService _customerService;
         private CustomerCreateDTO _createDto;
         private CustomerUpdateDTO _updateDto;
@@ -26,7 +29,7 @@ namespace InventoryLibrary.Source.Test.Service
 
         public CustomerServiceTest()
         {
-            _customerService = new CustomerService(_customerRepo.Object);
+            _customerService = new CustomerService(_customerRepo.Object,_context.Object);
             _createDto = new CustomerCreateDTO();
             _updateDto = new CustomerUpdateDTO();
             _customer = new Customer(full_name);

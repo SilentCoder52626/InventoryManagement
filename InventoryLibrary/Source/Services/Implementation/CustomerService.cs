@@ -14,9 +14,12 @@ namespace InventoryLibrary.Source.Services
     public class CustomerService : CustomerServiceInterface
     {
         private readonly CustomerRepositoryInterface _customerRepo;
-        public CustomerService(CustomerRepositoryInterface _customerRepo)
+        private readonly Testdbcontext _context;
+
+        public CustomerService(CustomerRepositoryInterface _customerRepo, Testdbcontext context)
         {
             this._customerRepo = _customerRepo;
+            _context = context;
         }
 
         public async Task Create(CustomerCreateDTO dto)
@@ -32,7 +35,7 @@ namespace InventoryLibrary.Source.Services
 
                 await _customerRepo.InsertAsync(customer);
 
-                tx.Complete();
+            tx.Complete();
             
 
         }

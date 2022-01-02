@@ -1,4 +1,5 @@
 ﻿using Inventory.ViewModels;
+using InventoryLibrary.AppDbContext;
 using InventoryLibrary.Exceptions;
 using InventoryLibrary.Repository.Interface;
 using InventoryLibrary.Services.ServiceInterface;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Inventory.Controllers
@@ -86,11 +88,11 @@ namespace Inventory.Controllers
 
 
                     await _customerService.Create(customer).ConfigureAwait(true);
-
                     _toastNotification.AddSuccessToastMessage("Created:- " + customer.FullName);
 
                     return RedirectToAction("Index");
                 }
+
             }
             catch (Exception ex)
             {

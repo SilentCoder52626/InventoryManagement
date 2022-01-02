@@ -33,62 +33,62 @@ namespace Inventory.Controllers
 
 
 
-        public async Task<IActionResult> Activate(long id)
-        {
-            await _itemService.Activate(id);
-            _toastNotification.AddSuccessToastMessage("Activated Successfully!");
-            return RedirectToAction("Index");
-        }
+        //public async Task<IActionResult> Activate(long id)
+        //{
+        //    await _itemService.Activate(id);
+        //    _toastNotification.AddSuccessToastMessage("Activated Successfully!");
+        //    return RedirectToAction("Index");
+        //}
 
        
 
-        [HttpPost]
-        public async Task<IActionResult> Create(ItemCreateIndexView model)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var Unit = await _unitRepo.GetById(model.UnitId).ConfigureAwait(true);
-                    var item = new ItemCreateDTO { ItemName = model.ItemName, Price = model.Price, Unit = Unit };
+        //[HttpPost]
+        //public async Task<IActionResult> Create(ItemCreateIndexView model)
+        //{
+        //    try
+        //    {
+        //        if (ModelState.IsValid)
+        //        {
+        //            var Unit = await _unitRepo.GetById(model.UnitId).ConfigureAwait(true);1
+        //            var item = new ItemCreateDTO { ItemName = model.ItemName, Price = model.Price, Unit = Unit };
 
 
-                    await _itemService.Create(item).ConfigureAwait(true);
-                    return Ok();
+        //            await _itemService.Create(item).ConfigureAwait(true);
+        //            return Ok();
 
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
 
-        public async Task<IActionResult> Deactivate(long id)
-        {
-            await _itemService.Deactivate(id);
-            _toastNotification.AddSuccessToastMessage("Deactivated Successfully!");
-            return RedirectToAction("Index");
-        }
+        //public async Task<IActionResult> Deactivate(long id)
+        //{
+        //    await _itemService.Deactivate(id);
+        //    _toastNotification.AddSuccessToastMessage("Deactivated Successfully!");
+        //    return RedirectToAction("Index");
+        //}
 
-        [HttpPost("Update")]
-        public async Task<ActionResult> Update(ItemUpdateViewModel model)
-        {
-            try
-            {
-                var Unit = await _unitRepo.GetById(model.UnitId).ConfigureAwait(true);
-                var item = new ItemUpdateDTO { ItemId = model.ItemId, Name = model.Name, Price = model.Rate, Unit = Unit };
+        //[HttpPost("Update")]
+        //public async Task<ActionResult> Update(ItemUpdateViewModel model)
+        //{
+        //    try
+        //    {
+        //        var Unit = await _unitRepo.GetById(model.UnitId).ConfigureAwait(true);
+        //        var item = new ItemUpdateDTO { ItemId = model.ItemId, Name = model.Name, Price = model.Rate, Unit = Unit };
 
-                await _itemService.Update(item).ConfigureAwait(true);
-                return Ok();
+        //        await _itemService.Update(item).ConfigureAwait(true);
+        //        return Ok();
 
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.Message);
+        //    }
 
 
-        }
+        //}
     }
 }

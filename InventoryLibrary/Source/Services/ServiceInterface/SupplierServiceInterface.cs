@@ -14,6 +14,5 @@ namespace InventoryLibrary.Services.ServiceInterface
 
         Task Deactivate(long id);
 
-        Task Delete(long id);
     }
 }

@@ -73,17 +73,6 @@ namespace InventoryLibrary.Source.Test.Service
         }
 
         [Fact]
-        public async Task Test_OnDelete_SupplierService()
-        {
-            _supplierRepo.Setup(a => a.GetById(It.IsAny<long>())).ReturnsAsync(_supplier);
-
-            await _supplierService.Delete(It.IsAny<long>());
-
-            _supplierRepo.Verify(a => a.DeleteAsync(_supplier));
-
-        }
-
-        [Fact]
         public async Task Test_TriggerException_OnUpdateNull()
         {
             _supplierRepo.Setup(a => a.GetById(It.IsAny<long>())).Returns(Task.FromResult<Supplier>(null));
