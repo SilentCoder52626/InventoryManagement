@@ -2,6 +2,7 @@
 using InventoryLibrary.Infrastructure.Mapping;
 using InventoryLibrary.Source.Audit;
 using InventoryLibrary.Source.Entity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace InventoryLibrary.AppDbContext
 {
-    public class Testdbcontext : DbContext
+    public class Testdbcontext : IdentityDbContext
     {
         public Testdbcontext(DbContextOptions<Testdbcontext> options) : base(options)
         {
