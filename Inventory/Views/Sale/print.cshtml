@@ -33,14 +33,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach(var data in @Model.SalesDetails){
-                    <tr>
-                        <td>@data.ItemName</td>
-                        <td>@data.Qty</td>
-                        <td>@data.Price</td>
-                        <td>@data.Total</td>
+                    @foreach (var data in Model.SalesDetails)
+                    {
+                        <tr>
+                            <td>@data.ItemName</td>
+                            <td>@data.Qty</td>
+                            <td>@data.Price</td>
+                            <td>@Math.Round(data.Total,2)</td>
 
-                    </tr>
+                        </tr>
 
                     }
                     <tr>
@@ -63,7 +64,7 @@
     </div>
 
     <script>
-        window.onload = function () { window.print(); }
+        window.onload = function() { window.print(); }
     </script>
 
 </body>

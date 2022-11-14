@@ -47,7 +47,7 @@
                                 <td>@data.Type</td>
                                 @if (data.AmountType == InventoryLibrary.Entity.CustomerTransaction.TypeDebit)
                                 {
-                                    <td>@data.Amount</td>
+                                    <td>@Math.Round(data.Amount,2)</td>
 
 
                                     <td></td>
@@ -55,11 +55,11 @@
                                 else
                                 {
                                     <td></td>
-                                    <td>@data.Amount</td>
+                                    <td>@Math.Round(data.Amount)</td>
                                 }
 
                                 <td>
-                                    @data.BalanceAmount @data.BalanceType
+                                    @Math.Round(data.BalanceAmount,2) @data.BalanceType
                                 </td>
 
 

@@ -68,11 +68,11 @@ namespace Inventory.Controllers
                 var purchaseDetail = (await _purchaseDetailRepo.GetQueryable().Where(a => a.PurchaseId == id).ToListAsync());
                 var data = purchaseDetail.Select(a => new
                 {
-                    a.Id,
-                    a.Items.Name,
-                    a.Amount,
-                    a.Qty,
-                    a.Rate
+                    id = a.Id,
+                    name = a.Items.Name,
+                    amount = a.Amount,
+                    qty = a.Qty,
+                    rate = a.Rate
                 });
                 return Json(data);
             }

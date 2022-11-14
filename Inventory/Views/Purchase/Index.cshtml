@@ -25,17 +25,17 @@
                 @{
                     foreach (var data in Model)
                     {
-                        <tr>
-                            <td>@data.Id</td>
-                            <td>@data.Date</td>
-                            <td>@data.SupplierName</td>
-                            <td>@data.Total</td>
-                            <td>@data.Discount</td>
-                            <td>@data.GrandTotal</td>
-                            <td>
-                                <a class="btn btn-primary btn-details" data-toggle="modal" href="#" data-target="#myModal">Details</a>
-                            </td>
-                        </tr>
+                                <tr>
+                                    <td>@data.Id</td>
+                                    <td>@data.Date</td>
+                                    <td>@data.SupplierName</td>
+                                    <td>@Math.Round(data.Total,2)</td>
+                                    <td>@Math.Round(data.Discount,2)</td>
+                                    <td>@Math.Round(data.GrandTotal,2)</td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary btn-details" data-toggle="modal" data-target="#myModal">Details</button>
+                                    </td>
+                                </tr>
                     }
                 }
 
@@ -48,7 +48,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body bg-light">
-                    <table class="table modal-table">
+                    <table class="table table-bordered modal-table" id="purchase_detail_table">
                         <thead class="thead-dark">
                             <tr>
                                 <th> # </th>
@@ -76,11 +76,11 @@
 
 @section scripts{
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             $('#mainTable').DataTable();
 
-            $('.btn-details').on('click', function (e) {
+            $('.btn-details').on('click', function(e) {
                 e.preventDefault();
                 var id = $(this).closest('tr').find('td').eq(0).text();
                 var url = '/Purchase/GetDetails?id=' + id + "";
@@ -89,23 +89,21 @@
                     url: url,
                     dataType: 'json',
                     type: 'GET',
-                    success: function (data) {
+                    success: function(data) {
                         $('display').css({ 'display': 'block' });
-                        $('.modal-table tbody tr').remove();
-
-                        for (var i = 0; i <= data.length; i++) {
-                            $('.modal-table tbody').append(
-                                `
-                                                                        <tr>
-                                                                            <td>${data[i].id}</td>
-                                                                            <td>${data[i].name}</td>
-                                                                            <td>${data[i].qty}</td>
-                                                                            <td>${data[i].rate}</td>
-                                                                            <td>${data[i].amount}</td>
-                                                                        </tr>
-                                                                       `
-                            )
-                        }
+                        $('#purchase_detail_table tbody tr').remove();
+                        $(function() {
+                            $.each(data, function(i, item) {
+                                $('<tr>').append(
+                                    $('<td>').text(item.id),
+                                    $('<td>').text(item.name),
+                                    $('<td>').text(item.qty),
+                                    $('<td>').text(item.rate),
+                                    $('<td>').text(item.amount)).appendTo('#purchase_detail_table');
+                            });
+                            $("#myModal").modal('show');
+                        });
+                       
                     }
                 });
             })

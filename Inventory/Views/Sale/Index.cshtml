@@ -29,16 +29,17 @@
                         @{
                             foreach (var data in Model)
                             {
-                                <tr>
-                                    <td scope="row" class="sale-id">@data.SaleId</td>
-                                    <td>@data.date</td>
-                                    <td>@data.CustomerName</td>
-                                    <td>@data.discount</td>
-                                    <td>@data.netTotal</td>
-                                    <td>
-                                        <a class="btn btn-info btn-details text-white btn-sm details" data-toggle="modal" data-target="#myModal"> Details </a>
-                                    </td>
-                                </tr>
+                                    <tr>
+                                        <td scope="row" class="sale-id">@data.SaleId</td>
+                                        <td>@data.date</td>
+                                        <td>@data.CustomerName</td>
+                                        <td>@data.discount</td>
+                                        <td>@data.netTotal</td>
+                                        <td>
+                                            <a class="btn btn-info btn-details text-white btn-sm details" data-toggle="modal" data-target="#myModal"> Details </a>
+                                            <a class="btn btn-success btn-print text-white btn-sm"> Print </a>
+                                        </td>
+                                    </tr>
 
                             }
                         }
@@ -54,7 +55,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body bg-light">
-                    <table class="table table-bordered modal-table">
+                    <table class="modal-table table table-bordered" id="salesDetailTable"> 
                         <thead class="thead-dark">
                             <tr>
                                 <th> # </th>
@@ -83,7 +84,14 @@
             $("#mainTable").DataTable({
                 "pageLength": 10
             });
-
+            $('.btn-print').on('click',function(){
+                event.preventDefault();
+                var id = $(this).closest('tr').find('td').eq(0).text();
+                var url = '/Sale/Print?saleId=' + id + "";
+                window.open(url, '_blank');
+                
+                
+            })
             $('.btn-details').on('click', function () {
 
                 event.preventDefault();
@@ -95,26 +103,22 @@
                 $.ajax({
                     url: url,
                     type: 'GET',
-                    dataType: 'json',
-                    success: function (data) {
-
-                        $('display').css({ 'display': "block" });
-                        $('.modal-table tbody tr').remove();
-                        console.log(data);
-                        for (var i = 0; i < data.length; i++) {
-                            $('.modal-table tbody').append(
-                                `
-                                        <tr>
-                                            <td>${data[i].saleDetailId}</td>
-                                            <td>${data[i].itemName}</td>
-                                            <td>${data[i].qty}</td>
-                                            <td>${data[i].price}</td>
-                                            <td>${data[i].total}</td>
-                                        </tr>
-                                        `
-                            );
-                        }
-                        $('#myModel').modal('show');
+                    dataType: 'json',                    
+                     success: function(data) {
+                        $('display').css({ 'display': 'block' });
+                        $('#salesDetailTable tbody tr').remove();
+                        $(function() {
+                            $.each(data, function(i, item) {
+                                $('<tr>').append(
+                                    $('<td>').text(item.saleDetailId),
+                                    $('<td>').text(item.itemName),
+                                    $('<td>').text(item.qty),
+                                    $('<td>').text(item.price),
+                                    $('<td>').text(item.total)).appendTo('#salesDetailTable');
+                            });
+                            $("#myModal").modal('show');
+                        });
+                       
                     }
 
                 });
